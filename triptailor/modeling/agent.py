@@ -9,10 +9,11 @@ from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIM
 from prompts import PREFERENCES_EXTRACTION_PROMPT, IDEAS_GENERATION_PROMPT, ITINERARY_PLANNING_PROMPT
 from data_schemas import user_preferences_parser, travel_ideas_parser
 from data_schemas import AgentState
-
+from loguru import logger
 
 class Agent:
-    def __init__(self, model, tools, checkpointer, system=""):
+    def __init__(self, model, checkpointer, tools=None, system=""):
+        logger.info("Agent initialization started")
         self.system = system
         builder = StateGraph(AgentState)
         builder.add_node("preferences_extraction", self._preferences_extraction_node)
@@ -22,8 +23,13 @@ class Agent:
         builder.add_edge("preferences_extraction", "ideas_generation")
         builder.add_edge("ideas_generation", "itinerary_planning")
         self.graph = builder.compile(checkpointer=checkpointer)
-        self.tools = {t.name: t for t in tools}
-        self.model = model.bind_tools(tools)    
+        if tools:
+            self.tools = {t.name: t for t in tools}
+            self.model = model.bind_tools(tools)  
+        else:
+            self.model = model  
+        logger.info("Agent initialized")
+
 
     def _preferences_extraction_node(self, state: AgentState):
         chain = PREFERENCES_EXTRACTION_PROMPT | self.model | user_preferences_parser

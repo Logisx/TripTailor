@@ -22,19 +22,20 @@ class InferencePipeline:
             Would like to keep one day without any activities, just to say at the hotel and rest.\
             Our budget is moderate, and we prefer shorter travel distances between destinations.
             """
-            tool = TavilySearchResults(max_results=2)
+            #tool = TavilySearchResults(max_results=2)
             model = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
-            agent = Agent(model, [tool], system=prompt, checkpointer=memory)
+            agent = Agent(model, system=prompt, checkpointer=memory)
             thread = {"configurable": {"thread_id": "1"}}
             response = []
 
-            for s in agent.graph.stream({
-                'user_query': prompt,
-            }, thread):
+            logger.info("Streaming the responses")
+            for s in agent.graph.stream({'user_query': prompt}, thread):
                 print(s)
                 response.append(s)
+            logger.info("Streaming ended")
 
 
+        logger.info("Displaying the response")
         response_dict = {}
         for node_response in response:
             response_dict.update(node_response)
