@@ -1,44 +1,55 @@
 from loguru import logger
-from agent import Agent
+from modeling.agent import Agent
 from dotenv import load_dotenv
 
-_ = load_dotenv()
+import json
+
+_ = load_dotenv(override=True)
 
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langchain_openai import ChatOpenAI
 
 class InferencePipeline:
-    def __init__(self):
-        pass
-
-    def main(self):           
+    @staticmethod
+    def run_inference(user_prompt=None):           
         with SqliteSaver.from_conn_string(":memory:") as memory:
 
-            prompt = """
-            I am planning a 3-day family trip to Italy. We enjoy historical sites, good food, and outdoor activities. \
-            We’d like to visit different cities and explore famous landmarks, but also have some relaxing days in nature. \
-            Would like to keep one day without any activities, just to say at the hotel and rest.\
-            Our budget is moderate, and we prefer shorter travel distances between destinations.
-            """
+            # Init the agent
             #tool = TavilySearchResults(max_results=2)
             model = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
-            agent = Agent(model, system=prompt, checkpointer=memory)
+            agent = Agent(model, system=user_prompt, checkpointer=memory)
             thread = {"configurable": {"thread_id": "1"}}
             response = []
 
+            # Run streaming
             logger.info("Streaming the responses")
-            for s in agent.graph.stream({'user_query': prompt}, thread):
-                print(s)
-                response.append(s)
+            for single_response in agent.graph.stream({'user_query': user_prompt}, thread):
+                print(single_response)
+                response.append(single_response)
             logger.info("Streaming ended")
+
+            # Format the output to json
+            response_dict = {}
+            for node_response in response:
+                response_dict.update(node_response)
+            preferences_json = json.dumps(response_dict['preferences_extraction']['user_preferences'], indent=4)
+            ideas_json = json.dumps(response_dict['ideas_generation']['travel_ideas'], indent=4)
+            itinerary_json = json.dumps(response_dict['itinerary_planning']['itinerary'], indent=4)
+
+            return preferences_json, ideas_json, itinerary_json
 
 
 if __name__ == "__main__":
     try:
         logger.info('>>>>> Inference started <<<<<')
 
-        inference_pipeline = InferencePipeline()
-        inference_pipeline.main()
+        sample_user_prompt = """
+            I am planning a 3-day family trip to Italy. We enjoy historical sites, good food, and outdoor activities. \
+            We’d like to visit different cities and explore famous landmarks, but also have some relaxing days in nature. \
+            Would like to keep one day without any activities, just to stay at the hotel and rest.\
+            Our budget is moderate, and we prefer shorter travel distances between destinations.
+            """
+        InferencePipeline().run_inference(sample_user_prompt)
 
         logger.info('>>>>> Inference completed <<<<<')
         

@@ -122,6 +122,101 @@ class TravelIdeas(BaseModel):
         }
 
 
+class Destination(BaseModel):
+    name: str = Field(description="The name of the destination, e.g., 'Colosseum', 'Central Park'.")
+    type: Optional[str] = Field(description="The type of the destination, e.g., 'museum', 'restaurant', 'park', etc.")
+    duration: float = Field(description="Approximate time in hours to spend at this destination.")
+    description: Optional[str] = Field(description="A brief description of the destination.")
+
+class MajorActivity(BaseModel):
+    main_activity: List[Destination] = Field(description="A list of destinations that represent the main activity (e.g., \
+                                             walking tour including multiple places).")
+
+class DayItinerary(BaseModel):
+    date: str = Field(description="The specific date of this day in the itinerary, formatted as 'YYYY-MM-DD'.")
+    activities: List[MajorActivity] = Field(description="A list of major activities planned for this day, each with a list of \
+                                            destinations or sub-activities.")
+
+class Itinerary(BaseModel):
+    trip_name: Optional[str] = Field(description="Optional name or title of the trip.")
+    destination_country: str = Field(description="The primary country of the trip.")
+    destination_cities: str = Field(description="The primary city or cities of the trip.")
+    duration: int = Field(description="Total duration of the trip in days.")
+    start_date: str = Field(description="The starting date of the trip in 'YYYY-MM-DD' format.")
+    end_date: str = Field(description="The ending date of the trip in 'YYYY-MM-DD' format.")
+    daily_itineraries: List[DayItinerary] = Field(description="A list of daily itineraries, each representing a day of the trip.")
+
+class Config:
+    schema_extra = {
+        "example": {
+            "trip_name": "Family Vacation to Italy",
+            "destination_country": "Italy",
+            "destination_cities": "Rome, Florence, Venice",
+            "duration": 5,
+            "start_date": "2024-05-10",
+            "end_date": "2024-05-14",
+            "daily_itineraries": [
+                {
+                    "date": "2024-05-10",
+                    "activities": [
+                        {
+                            "main_activity": [
+                                {
+                                    "name": "Colosseum",
+                                    "type": "historical site",
+                                    "duration": 1.5,
+                                    "description": "A visit to the iconic Colosseum in Rome, Italy."
+                                },
+                                {
+                                    "name": "Roman Forum",
+                                    "type": "historical site",
+                                    "duration": 1.0,
+                                    "description": "Walk through the ruins of the Roman Forum, a symbol of ancient Rome."
+                                },
+                                {
+                                    "name": "Pantheon",
+                                    "type": "historical site",
+                                    "duration": 1.0,
+                                    "description": "Visit the ancient Roman temple, the Pantheon, now a church."
+                                }
+                            ]
+                        },
+                        {
+                            "main_activity": [
+                                {
+                                    "name": "Lunch at Trattoria da Enzo",
+                                    "type": "restaurant",
+                                    "duration": 1.5,
+                                    "description": "Enjoy a delicious Italian lunch at this traditional Roman restaurant."
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "date": "2024-05-11",
+                    "activities": [
+                        {
+                            "main_activity": [
+                                {
+                                    "name": "Florence Cathedral",
+                                    "type": "historical site",
+                                    "duration": 1.5,
+                                    "description": "Explore the magnificent Florence Cathedral, also known as the Duomo."
+                                },
+                                {
+                                    "name": "Uffizi Gallery",
+                                    "type": "art museum",
+                                    "duration": 2.0,
+                                    "description": "Visit one of the most important art museums in Italy."
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
 
 class AgentState(TypedDict):
     user_query: str
@@ -134,3 +229,4 @@ class AgentState(TypedDict):
 
 user_preferences_parser = JsonOutputParser(pydantic_object=UserPreferences)
 travel_ideas_parser = JsonOutputParser(pydantic_object=TravelIdeas)
+itinerary_parser = JsonOutputParser(pydantic_object=Itinerary)
