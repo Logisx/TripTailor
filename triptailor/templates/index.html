@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Travel Planner</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .main-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="main-container">
+            <!-- Header -->
+            <div class="header">
+                <h1>Welcome to AI Travel Planner</h1>
+                <p>Get personalized itineraries based on your preferences.</p>
+            </div>
+
+            <!-- User Input Form -->
+            <form id="preferencesForm">
+                <!-- Trip Description -->
+                <div class="form-group">
+                    <label for="tripDescription">Describe your trip</label>
+                    <textarea class="form-control" id="tripDescription" rows="3" placeholder="e.g. I want to explore the Alps, go hiking, and experience local culture." required></textarea>
+                </div>
+
+                <!-- Budget -->
+                <div class="form-group">
+                    <label for="budget">Budget (€)</label>
+                    <input type="number" class="form-control" id="budget" placeholder="Enter your budget" required>
+                </div>
+
+                <!-- Duration -->
+                <div class="form-group">
+                    <label for="duration">Duration (days)</label>
+                    <input type="number" class="form-control" id="duration" placeholder="How many days will your trip last?" required>
+                </div>
+
+                <!-- Destination -->
+                <div class="form-group">
+                    <label for="destination">Preferred Destination(s)</label>
+                    <input type="text" class="form-control" id="destination" placeholder="e.g. Paris, Switzerland" required>
+                </div>
+
+                <!-- Optional Filters -->
+                <div class="form-group">
+                    <label>Optional Filters</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="foodPreference">
+                        <label class="form-check-label" for="foodPreference">
+                            Include food preferences (e.g., vegetarian, vegan)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="activityType">
+                        <label class="form-check-label" for="activityType">
+                            Focus on specific activities (e.g., adventure, relaxation)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="accessibilityNeeds">
+                        <label class="form-check-label" for="accessibilityNeeds">
+                            Include accessibility considerations
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-custom">Generate Itinerary</button>
+                </div>
+            </form>
+
+            <!-- Additional Links (Optional) -->
+            <div class="text-center">
+                <a href="#" class="btn btn-link">Learn more about our AI Travel Assistant</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap and JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.5/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <!-- Form Submission Script -->
+    <script>
+        document.getElementById('preferencesForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            const tripDescription = document.getElementById('tripDescription').value;
+            const budget = document.getElementById('budget').value;
+            const duration = document.getElementById('duration').value;
+            const destination = document.getElementById('destination').value;
+            const filters = {
+                foodPreference: document.getElementById('foodPreference').checked,
+                activityType: document.getElementById('activityType').checked,
+                accessibilityNeeds: document.getElementById('accessibilityNeeds').checked
+            };
+
+            // Handle form submission (send data to backend API)
+            const userData = {
+                tripDescription,
+                budget,
+                duration,
+                destination,
+                filters
+            };
+
+            // Example: POST request to backend API
+            fetch('/api/itinerary/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle successful itinerary generation (e.g., redirect to Page 2)
+                console.log('Generated Itinerary:', data);
+                window.location.href = '/itinerary';  // Redirect to the itinerary display page
+            })
+            .catch(error => {
+                console.error('Error generating itinerary:', error);
+            });
+        });
+    </script>
+</body>
+</html>

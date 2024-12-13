@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ trip_name }}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        .container { max-width: 900px; margin: 50px auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .itinerary-day { margin-bottom: 20px; }
+        .map-container { height: 400px; margin-top: 30px; }
+        .btn-custom { background-color: #007bff; color: white; }
+        .btn-custom:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>{{ trip_name }}</h1>
+            <p>
+                Explore {{ destination_cities }} in {{ destination_country }} 
+                from {{ start_date }} to {{ end_date }}.
+            </p>
+            <a href="/" class="btn btn-link">Back to Home</a>
+        </div>
+
+        <!-- Itinerary Display -->
+        <div id="itineraryDisplay">
+            {% for day in daily_itineraries %}
+                <div class="itinerary-day">
+                    <h3>Day {{ loop.index }} ({{ day.date }})</h3>
+                    {% for activity_group in day.activities %}
+                        {% for activity in activity_group.main_activity %}
+                            <div>
+                                <h5>{{ activity.name }}</h5>
+                                <p>Type: {{ activity.type }}</p>
+                                <p>Duration: {{ activity.duration }} hours</p>
+                                <p>Description: {{ activity.description }}</p>
+                                <img src="{{ activity.image_url }}" alt="{{ activity.name }}" style="width:100%;max-width:300px;">
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Map Container -->
+        <div id="map" class="map-container"></div>
+
+        <!-- Edit Itinerary -->
+        <div class="form-group text-center">
+            <button class="btn btn-custom" onclick="editItinerary()">Edit Itinerary</button>
+        </div>
+
+        <!-- Save & Share Itinerary -->
+        <div class="form-group text-center">
+            <button class="btn btn-custom" onclick="saveItinerary()">Save & Share</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and Leaflet JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.5/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        // Initialize Leaflet Map
+        function initializeMap() {
+            const map = L.map('map').setView([41.8902, 12.4922], 13);  // Example coordinates for Rome
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Add markers dynamically
+            {% for day in daily_itineraries %}
+                {% for activity_group in day.activities %}
+                    {% for activity in activity_group.main_activity %}
+                        L.marker([{{ activity.geolocation.lat }}, {{ activity.geolocation.lng }}])
+                            .addTo(map)
+                            .bindPopup("<b>{{ activity.name }}</b><br>{{ activity.description }}");
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Travel Planner - Your Itinerary</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .itinerary-day {
+            margin-bottom: 20px;
+        }
+        .map-container {
+            height: 400px;
+            margin-top: 30px;
+        }
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Your Itinerary</h1>
+            <p>Here's your personalized itinerary based on your preferences.</p>
+            <a href="/" class="btn btn-link">Back to Home</a>
+        </div>
+
+        <!-- Itinerary Display -->
+        <div id="itineraryDisplay">
+            <!-- Placeholder for itinerary days (This will be populated by JS) -->
+        </div>
+
+        <!-- Map Container -->
+        <div id="map" class="map-container"></div>
+
+        <!-- Edit Itinerary -->
+        <div class="form-group text-center">
+            <button class="btn btn-custom" onclick="editItinerary()">Edit Itinerary</button>
+        </div>
+
+        <!-- Save & Share Itinerary -->
+        <div class="form-group text-center">
+            <button class="btn btn-custom" onclick="saveItinerary()">Save & Share</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and Leaflet JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.5/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <script>
+        // Sample itinerary data (Replace this with actual data from backend)
+        const itinerary = {
+            "days": [
+                {
+                    "day": 1,
+                    "activities": [
+                        {"name": "Eiffel Tower", "location": "Paris", "description": "Visit the iconic Eiffel Tower."},
+                        {"name": "Louvre Museum", "location": "Paris", "description": "Explore art and history at the Louvre."}
+                    ]
+                },
+                {
+                    "day": 2,
+                    "activities": [
+                        {"name": "Montmartre", "location": "Paris", "description": "Walk around the artistic Montmartre district."},
+                        {"name": "Seine River Cruise", "location": "Paris", "description": "Take a relaxing boat tour along the Seine."}
+                    ]
+                }
+            ]
+        };
+
+        // Display itinerary
+        function displayItinerary() {
+            const itineraryContainer = document.getElementById('itineraryDisplay');
+            itinerary.days.forEach(day => {
+                const dayDiv = document.createElement('div');
+                dayDiv.classList.add('itinerary-day');
+                let dayContent = `<h3>Day ${day.day}</h3>`;
+                day.activities.forEach(activity => {
+                    dayContent += `
+                        <p><strong>${activity.name}</strong> - ${activity.location}</p>
+                        <p>${activity.description}</p>
+                    `;
+                });
+                dayDiv.innerHTML = dayContent;
+                itineraryContainer.appendChild(dayDiv);
+            });
+        }
+
+        // Initialize Leaflet Map
+        function initializeMap() {
+            const map = L.map('map').setView([48.8566, 2.3522], 12);  // Default location: Paris
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Add markers for each activity location (this will be updated with real data)
+            itinerary.days.forEach(day => {
+                day.activities.forEach(activity => {
+                    L.marker([48.8566, 2.3522])  // Default coordinates for example
+                        .addTo(map)
+                        .bindPopup(`<b>${activity.name}</b><br>${activity.description}`);
+                });
+            });
+        }
+
+        // Edit itinerary function
+        function editItinerary() {
+            alert("Editing functionality will be implemented.");
+        }
+
+        // Save & share itinerary
+        function saveItinerary() {
+            alert("Save & share functionality will be implemented.");
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            displayItinerary();
+            initializeMap();
+        });
+    </script>
+</body>
+</html>

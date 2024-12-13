@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
+import json
 import logging
 #from your_ai_module import generate_itinerary  # Replace with your AI pipeline module
 #from google_api_utils import get_place_data  # Replace with your Google API utilities
@@ -8,7 +9,7 @@ app = Flask(__name__)
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-@app.route('/api/itinerary/generate', methods=['POST'])
+@app.route('/itinerary/generate', methods=['POST'])
 def generate_itinerary_route():
     """
     Endpoint to generate a travel itinerary based on user input.
@@ -43,7 +44,31 @@ def home():
     """
     Basic route to confirm the server is running.
     """
-    return "AI Travel Planner Backend is running!"
+    return render_template('index.html')
+
+
+@app.route('/itinerary')
+def itinerary():
+
+    #with open('triptailor/modeling/itinerary_example.json', 'r') as file:
+    #    itinerary_data = json.load(file)
+
+    trip_name = itinerary_data.get("trip_name", "Untitled Trip")
+    destination_country = itinerary_data.get("destination_country", "Unknown Country")
+    destination_cities = itinerary_data.get("destination_cities", "Unknown Cities")
+    start_date = itinerary_data.get("start_date", "N/A")
+    end_date = itinerary_data.get("end_date", "N/A")
+    daily_itineraries = itinerary_data.get("daily_itineraries", [])
+
+    return render_template(
+        'itinerary.html',
+        trip_name=trip_name,
+        destination_country=destination_country,
+        destination_cities=destination_cities,
+        start_date=start_date,
+        end_date=end_date,
+        daily_itineraries=daily_itineraries
+    )
 
 if __name__ == '__main__':
     # Set the debug mode to True for development purposes
