@@ -11,6 +11,13 @@
             background-color: #f5f7fa;
             font-family: Arial, sans-serif;
         }
+        /* General label styling */
+        label {
+            font-size: 1.25rem; /* Increased font size for labels */
+            font-weight: bold; /* Bold for emphasis */
+            display: block;
+            margin-bottom: 10px;
+        }
         .main-container {
             max-width: 900px;
             margin: 50px auto;
@@ -89,7 +96,7 @@
             flex: 1 1 calc(25% - 10px); /* For 4 tiles per row */
             box-sizing: border-box;
             transition: all 0.2s ease-in-out; /* Smooth transition */
-            height: 100px; /* Fixed height for increased size */
+            height: 80px; /* Fixed height for increased size */
             display: flex; /* Flexbox for content alignment */
             align-items: center; /* Vertically center content */
             justify-content: center; /* Horizontally center content */
@@ -136,7 +143,12 @@
             }
         }
 
-
+        /* Style for the separator line */
+        .form-separator {
+            border: none;
+            border-top: 1px solid #ddd; /* Thin line */
+            margin: 20px 0; /* Space around the line */
+        }
 
         .btn-custom {
             background-color: #007bff;
@@ -233,7 +245,7 @@
             <form id="tripForm">
                 <div class="form-group">
                     <label for="tripDescription">Describe your trip in details:</label>
-                    <textarea class="form-control" id="tripDescription" rows="3" placeholder="e.g., We are planning a 3-day family trip to Italy. We would like to do sightseeing in Rome and ..." required></textarea>
+                    <textarea class="form-control" id="tripDescription" rows="3" placeholder="We are planning a 3-day family trip to Italy. We would like to do sightseeing in Rome and ..." required></textarea>
                 </div>
                 <div class="text-center">
                     <button type="button" class="btn btn-custom" onclick="nextStep(3)">Continue</button>
@@ -246,13 +258,14 @@
             <div class="header text-center">
                 <h2>Customize Your Trip</h2>
             </div>
+            <hr class="form-separator">
             <form>
                 <div class="form-group">
-                    <label for="budget">Budget (in EUR):</label>
+                    <label for="budget">What is your approximate budget in EUR?</label>
                     <input type="number" class="form-control" id="budget" placeholder="Enter your budget" required>
                 </div>
                 <div class="form-group">
-                    <label for="people">Number of People:</label>
+                    <label for="people">How many people are travelling?</label>
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <button class="btn btn-custom-round" type="button" onclick="updatePeopleCount(-1)">-</button>
@@ -262,7 +275,8 @@
                             <button class="btn btn-custom-round" type="button" onclick="updatePeopleCount(1)">+</button>
                         </div>
                     </div>
-                </div>                
+                </div>     
+                           
                 <div class="form-group d-flex justify-content-between">
                     <div class="d-flex flex-column">
                         <label for="startDate">Start Date:</label>
@@ -284,6 +298,7 @@
             <div class="header text-center">
                 <h2>And a bit of details</h2>
             </div>
+            <hr class="form-separator">
             <form>
                 <div class="form-group">
                     <label>What is your trip vibe?</label>
@@ -295,6 +310,8 @@
                     </div>
                     <input type="hidden" id="vibe" name="vibe" required>
                 </div>
+                
+                <hr class="form-separator">
                 
                 <div class="form-group">
                     <label>Which activities are you interested in?</label>
@@ -312,6 +329,7 @@
                     </div>
                     <input type="hidden" id="interests" name="interests" required>
                 </div>
+                
                 
                 
                 
