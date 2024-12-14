@@ -5,6 +5,7 @@
 
 from flask import Flask, request, jsonify, render_template, session, redirect
 import json
+import time
 import secrets
 import configparser
 from modeling.inference import InferencePipeline
@@ -69,6 +70,7 @@ def generate_itinerary_route():
     if app.config['DEBUG']:
         with open('triptailor/modeling/itinerary_example.json', 'r') as file:
             itinerary_json = json.load(file)
+        time.sleep(5) # To imitate delay
     else:
         logger.info('>>>>> Inference started <<<<<')
         _, _, itinerary_json = InferencePipeline().run_inference(user_prompt)
