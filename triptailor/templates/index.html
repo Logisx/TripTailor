@@ -7,148 +7,196 @@
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
         .main-container {
             max-width: 900px;
             margin: 50px auto;
-            padding: 20px;
-            background-color: #f8f9fa;
+            padding: 30px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             border-radius: 8px;
         }
-        .form-group {
-            margin-bottom: 15px;
+        .header h1 {
+            font-weight: 700;
         }
         .btn-custom {
             background-color: #007bff;
             color: white;
+            border-radius: 5px;
         }
         .btn-custom:hover {
             background-color: #0056b3;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .progress-bar {
+            background-color: #007bff;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="main-container">
-            <!-- Header -->
-            <div class="header">
+<div class="container">
+    <div class="main-container">
+        <!-- Progress Bar -->
+        <div class="progress mb-4">
+            <div id="progressBar" class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <!-- Step 1: Welcome Screen -->
+        <div class="step active" id="step1">
+            <div class="header text-center">
                 <h1>Welcome to AI Travel Planner</h1>
-                <p>Get personalized itineraries based on your preferences.</p>
+                <p>Plan your next adventure effortlessly with our AI-powered tool.</p>
             </div>
-
-            <!-- User Input Form -->
-            <form id="preferencesForm">
-                <!-- Trip Description -->
-                <div class="form-group">
-                    <label for="tripDescription">Describe your trip</label>
-                    <textarea class="form-control" id="tripDescription" rows="3" placeholder="e.g. I want to explore the Alps, go hiking, and experience local culture." required></textarea>
-                </div>
-
-                <!-- Budget -->
-                <div class="form-group">
-                    <label for="budget">Budget (€)</label>
-                    <input type="number" class="form-control" id="budget" placeholder="Enter your budget" required>
-                </div>
-
-                <!-- Duration -->
-                <div class="form-group">
-                    <label for="duration">Duration (days)</label>
-                    <input type="number" class="form-control" id="duration" placeholder="How many days will your trip last?" required>
-                </div>
-
-                <!-- Destination -->
-                <div class="form-group">
-                    <label for="destination">Preferred Destination(s)</label>
-                    <input type="text" class="form-control" id="destination" placeholder="e.g. Paris, Switzerland" required>
-                </div>
-
-                <!-- Optional Filters -->
-                <div class="form-group">
-                    <label>Optional Filters</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="foodPreference">
-                        <label class="form-check-label" for="foodPreference">
-                            Include food preferences (e.g., vegetarian, vegan)
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="activityType">
-                        <label class="form-check-label" for="activityType">
-                            Focus on specific activities (e.g., adventure, relaxation)
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="accessibilityNeeds">
-                        <label class="form-check-label" for="accessibilityNeeds">
-                            Include accessibility considerations
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Buttons -->
-                <div class="form-group text-center">
-                    <button type="submit" class="btn btn-custom">Generate Itinerary</button>
-                </div>
-            </form>
-
-            <!-- Additional Links (Optional) -->
             <div class="text-center">
-                <a href="#" class="btn btn-link">Learn more about our AI Travel Assistant</a>
+                <button class="btn btn-custom" onclick="nextStep(2)">Start</button>
             </div>
         </div>
+
+        <!-- Step 2: Trip Description -->
+        <div class="step" id="step2">
+            <div class="header text-center">
+                <h2>Let's Plan Your Trip</h2>
+            </div>
+            <form id="tripForm">
+                <div class="form-group">
+                    <label for="tripDescription">Describe your trip:</label>
+                    <textarea class="form-control" id="tripDescription" rows="3" placeholder="e.g., A relaxing beach trip in Spain" required></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-custom" onclick="nextStep(3)">Next</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Step 3: Budget and Dates -->
+        <div class="step" id="step3">
+            <div class="header text-center">
+                <h2>Customize Your Trip</h2>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label for="budget">Budget (in EUR):</label>
+                    <input type="number" class="form-control" id="budget" placeholder="Enter your budget" required>
+                </div>
+                <div class="form-group">
+                    <label for="dates">Trip Dates:</label>
+                    <input type="date" class="form-control" id="dates" required>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-custom" onclick="nextStep(4)">Next</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Step 4: People and Interests -->
+        <div class="step" id="step4">
+            <div class="header text-center">
+                <h2>Who Are You Traveling With?</h2>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label for="people">Number of People:</label>
+                    <input type="number" class="form-control" id="people" placeholder="e.g., 2" required>
+                </div>
+                <div class="form-group">
+                    <label for="vibe">Trip Vibe:</label>
+                    <select class="form-control" id="vibe" required>
+                        <option value="family">Family</option>
+                        <option value="adventure">Adventure</option>
+                        <option value="romantic">Romantic</option>
+                        <option value="cultural">Cultural</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Interests:</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="beach" value="beach">
+                        <label class="form-check-label" for="beach">Beaches</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="nature" value="nature">
+                        <label class="form-check-label" for="nature">Nature</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="history" value="history">
+                        <label class="form-check-label" for="history">History</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="nightlife" value="nightlife">
+                        <label class="form-check-label" for="nightlife">Nightlife</label>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-custom" onclick="nextStep(5)">Next</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Step 5: Confirmation -->
+        <div class="step" id="step5">
+            <div class="header text-center">
+                <h2>You're All Set!</h2>
+                <p>Click below to get your AI-generated travel itinerary.</p>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-custom" onclick="submitForm()">Generate Itinerary</button>
+            </div>
+        </div>
+
     </div>
+</div>
 
-    <!-- Bootstrap and JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.5/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
-    <!-- Form Submission Script -->
-    <script>
-        document.getElementById('preferencesForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            
-            const tripDescription = document.getElementById('tripDescription').value;
-            const budget = document.getElementById('budget').value;
-            const duration = document.getElementById('duration').value;
-            const destination = document.getElementById('destination').value;
-            const filters = {
-                foodPreference: document.getElementById('foodPreference').checked,
-                activityType: document.getElementById('activityType').checked,
-                accessibilityNeeds: document.getElementById('accessibilityNeeds').checked
-            };
+<script>
+    let currentStep = 1;
+    function nextStep(step) {
+        document.getElementById(`step${currentStep}`).classList.remove('active');
+        currentStep = step;
+        document.getElementById(`step${currentStep}`).classList.add('active');
+        updateProgressBar();
+    }
 
-            // Handle form submission (send data to backend API)
-            const userData = {
-                tripDescription,
-                budget,
-                duration,
-                destination,
-                filters
-            };
+    function updateProgressBar() {
+        const progress = (currentStep - 1) * 25;
+        document.getElementById('progressBar').style.width = `${progress}%`;
+        document.getElementById('progressBar').setAttribute('aria-valuenow', progress);
+    }
 
-            // Example: POST request to backend API
-            fetch('/itinerary/generate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(userData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Handle successful itinerary generation (e.g., redirect to Page 2)
-                console.log('Generated Itinerary:', data);
-                window.location.href = '/itinerary';  // Redirect to the itinerary display page
-            })
-            .catch(error => {
-                console.error('Error generating itinerary:', error);
-            });
+    function submitForm() {
+        const userData = {
+            tripDescription: document.getElementById('tripDescription').value,
+            budget: document.getElementById('budget').value,
+            dates: document.getElementById('dates').value,
+            people: document.getElementById('people').value,
+            vibe: document.getElementById('vibe').value,
+            interests: Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value)
+        };
+
+        fetch('/itinerary/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Generated Itinerary:', data);
+            window.location.href = '/itinerary';
+        })
+        .catch(error => {
+            console.error('Error generating itinerary:', error);
         });
-    </script>
+    }
+</script>
+
 </body>
 </html>
