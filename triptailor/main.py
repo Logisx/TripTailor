@@ -55,6 +55,11 @@ def config():
     return ', '.join(s)
 
 
+@app.route('/loading', methods=['GET'])
+def loading_page():
+    return render_template('loading.html')
+
+
 @app.route('/itinerary/generate', methods=['POST'])
 def generate_itinerary_route():
     """
@@ -63,14 +68,16 @@ def generate_itinerary_route():
     # Parse input JSON
     user_input = request.json ### EMPTY INPUT NOW
     print("USER INPUT", user_input)
-    logger.info("Received user input: %s", user_input)
+    logger.info(f"Received user input: {0}", user_input)
     
     # Validate required fields    
 
     if app.config['DEBUG']:
+        logger.info('>>>>> Inference started <<<<<')
         with open('triptailor/modeling/itinerary_example.json', 'r') as file:
             itinerary_json = json.load(file)
         time.sleep(5) # To imitate delay
+        logger.info('>>>>> Inference completed <<<<<')
     else:
         logger.info('>>>>> Inference started <<<<<')
         _, _, itinerary_json = InferencePipeline().run_inference(user_prompt)
