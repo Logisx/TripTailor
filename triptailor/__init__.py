@@ -1,1 +1,1 @@
-from triptailor import config  # noqa: F401
+from triptailor import logger  # noqa: F401

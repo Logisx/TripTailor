@@ -6,6 +6,7 @@
 from flask import Flask, request, jsonify, render_template, session, redirect
 import json
 import secrets
+import configparser
 from modeling.inference import InferencePipeline
 from loguru import logger
 from dotenv import load_dotenv
@@ -14,7 +15,44 @@ _ = load_dotenv(override=True)
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
+
+
+def init(app):
+    config = configparser.ConfigParser()
+    config_location = "triptailor/etc/defaults.cfg"
+    
+    try:
+        print("INIT FUNCTION")
+        if not config.read(config_location):
+            raise FileNotFoundError(f"Config file not found at: {config_location}")
+
+        # Safely populate app.config with defaults for missing keys
+        app.config['DEBUG'] = config.getboolean("config", "debug", fallback=False)
+        app.config['ip_address'] = config.get("config", "ip_address", fallback="127.0.0.1")
+        app.config['port'] = config.getint("config", "port", fallback=5000)
+        app.config['url'] = config.get("config", "url", fallback="http://127.0.0.1:5000")
+    
+    except Exception as e:
+        print(f"Error loading configs from {config_location}: {e}")
+        # Provide fallback/default values if config loading fails
+        app.config['DEBUG'] = False
+        app.config['ip_address'] = "127.0.0.1"
+        app.config['port'] = 5000
+        app.config['url'] = "http://127.0.0.1:5000"
+
+init(app)
+
 itinerary_store = {}
+
+@app.route('/config/')
+def config():
+    s = []
+    s.append('debug: '+str(app.config['DEBUG']))
+    s.append('port: '+app.config['port'])
+    s.append('url: '+app.config['url'])
+    s.append('ip_address: '+app.config['ip_address'])
+    return ', '.join(s)
+
 
 @app.route('/itinerary/generate', methods=['POST'])
 def generate_itinerary_route():
@@ -39,7 +77,7 @@ def generate_itinerary_route():
     
     #user_prompt = """
     #    I am planning a 3-day family trip to Italy. We enjoy historical sites, good food, and outdoor activities. \
-    #    We’d like to visit different cities and explore famous landmarks, but also have some relaxing days in nature. \
+    #    We'd like to visit different cities and explore famous landmarks, but also have some relaxing days in nature. \
     #    Would like to keep one day without any activities, just to stay at the hotel and rest.\
     #    Our budget is moderate, and we prefer shorter travel distances between destinations.
     #    """
@@ -91,5 +129,8 @@ def itinerary():
 
 
 if __name__ == '__main__':
-    # Set the debug mode to True for development purposes
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    init(app)
+    app.run(
+        host=app.config['ip_address'],
+        port=int(app.config['port'])
+    )
