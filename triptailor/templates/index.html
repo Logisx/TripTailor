@@ -22,6 +22,122 @@
         .header h1 {
             font-weight: 700;
         }
+        .btn-custom-round {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-custom-round:hover {
+            background-color: #0056b3;
+        }
+        .form-control.text-center {
+            text-align: center;
+            width: 60px;
+        }
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: auto;
+        }
+        /* Flexbox layout to align the start date and end date side by side */
+        .form-group.d-flex {
+            display: flex;
+            justify-content: space-between; /* Adjust spacing between the two inputs */
+            gap: 20px; /* Optional: adjust the gap between the fields */
+        }
+
+        .form-group .d-flex.flex-column {
+            flex: 1;
+        }
+
+        /* Optional: You can adjust the width if necessary */
+        .form-control {
+            width: 100%;
+        }
+        
+        /* General tile styling */
+        .tiles-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Add a gap between the first and second rows */
+        .tiles-container.second-row {
+            margin-top: 20px; /* Adjust this value for more or less space */
+        }
+
+        .tile,
+        .vibe-tile,
+        .interest-tile {
+            padding: 10px 20px;
+            border: 2px solid rgb(227, 227, 227);
+            border-radius: 5px;
+            background-color: white;
+            color: black;
+            cursor: pointer;
+            text-align: center;
+            flex: 1 1 calc(25% - 10px); /* For 4 tiles per row */
+            box-sizing: border-box;
+            transition: all 0.2s ease-in-out; /* Smooth transition */
+            height: 100px; /* Fixed height for increased size */
+            display: flex; /* Flexbox for content alignment */
+            align-items: center; /* Vertically center content */
+            justify-content: center; /* Horizontally center content */
+        }
+
+        /* Hover effect for tiles: darker border */
+        .tile:hover,
+        .vibe-tile:hover,
+        .interest-tile:hover {
+            border-color: #444; /* Slightly darker border */
+        }
+
+        /* Selected tile effect */
+        .selected {
+            border-width: 3px;
+            border-color: black;
+            font-weight: bold;
+        }
+
+        /* Specific styles for the vibe tiles */
+        .vibe-tile {
+            font-weight: normal;
+        }
+
+        /* Specific styles for the interest tiles */
+        .interest-tile {
+            font-weight: normal;
+        }
+
+        /* Responsive layout */
+        @media (max-width: 768px) {
+            .tile,
+            .vibe-tile,
+            .interest-tile {
+                flex: 1 1 calc(50% - 10px); /* Two tiles per row on smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tile,
+            .vibe-tile,
+            .interest-tile {
+                flex: 1 1 100%; /* One tile per row on mobile */
+            }
+        }
+
+
+
         .btn-custom {
             background-color: #007bff;
             color: white;
@@ -137,15 +253,25 @@
                 </div>
                 <div class="form-group">
                     <label for="people">Number of People:</label>
-                    <input type="number" class="form-control" id="people" placeholder="e.g., 2" required>
-                </div>
-                <div class="form-group">
-                    <label for="startDate">Start Date:</label>
-                    <input type="date" class="form-control" id="startDate" required>
-                </div>
-                <div class="form-group">
-                    <label for="endDate">End Date:</label>
-                    <input type="date" class="form-control" id="endDate" required>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-custom-round" type="button" onclick="updatePeopleCount(-1)">-</button>
+                        </div>
+                        <input type="number" class="form-control text-center" id="people" placeholder="e.g., 2" value="2" required>
+                        <div class="input-group-append">
+                            <button class="btn btn-custom-round" type="button" onclick="updatePeopleCount(1)">+</button>
+                        </div>
+                    </div>
+                </div>                
+                <div class="form-group d-flex justify-content-between">
+                    <div class="d-flex flex-column">
+                        <label for="startDate">Start Date:</label>
+                        <input type="date" class="form-control" id="startDate" required>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <label for="endDate">End Date:</label>
+                        <input type="date" class="form-control" id="endDate" required>
+                    </div>
                 </div>
                 <div class="text-center">
                     <button type="button" class="btn btn-custom" id="nextButton" onclick="nextStep(4)" disabled>Next</button>
@@ -160,50 +286,34 @@
             </div>
             <form>
                 <div class="form-group">
-                    <label for="vibe">Trip Vibe:</label>
-                    <select class="form-control" id="vibe" required>
-                        <option value="family">Family</option>
-                        <option value="adventure">Adventure</option>
-                        <option value="romantic">Romantic</option>
-                        <option value="cultural">Cultural</option>
-                        <option value="leisure">Leisure</option>
-                    </select>
+                    <label>What is your trip vibe?</label>
+                    <div class="tiles-container">
+                        <div class="vibe-tile" data-value="family">Family</div>
+                        <div class="vibe-tile" data-value="adventure">Adventure</div>
+                        <div class="vibe-tile" data-value="romantic">Romantic</div>
+                        <div class="vibe-tile" data-value="cultural">Leisure</div>
+                    </div>
+                    <input type="hidden" id="vibe" name="vibe" required>
                 </div>
+                
                 <div class="form-group">
-                    <label>Interests:</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="beach" value="beach">
-                        <label class="form-check-label" for="beach">Beaches</label>
+                    <label>Which activities are you interested in?</label>
+                    <div class="tiles-container">
+                        <div class="interest-tile" data-value="beach">Beaches</div>
+                        <div class="interest-tile" data-value="sightseeing">Sightseeing</div>
+                        <div class="interest-tile" data-value="nature">Nature</div>
+                        <div class="interest-tile" data-value="history">History</div>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="sightseeing" value="sightseeing">
-                        <label class="form-check-label" for="sightseeing">Sightseeing</label>
+                    <div class="tiles-container second-row">
+                        <div class="interest-tile" data-value="nightlife">Nightlife</div>
+                        <div class="interest-tile" data-value="food">Food</div>
+                        <div class="interest-tile" data-value="shopping">Shopping</div>
+                        <div class="interest-tile" data-value="wellness">Wellness</div>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="nature" value="nature">
-                        <label class="form-check-label" for="nature">Nature</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="history" value="history">
-                        <label class="form-check-label" for="history">History</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="nightlife" value="nightlife">
-                        <label class="form-check-label" for="nightlife">Nightlife</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="food" value="food">
-                        <label class="form-check-label" for="food">Food</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="shopping" value="shopping">
-                        <label class="form-check-label" for="shopping">Shopping</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="wellness" value="wellness">
-                        <label class="form-check-label" for="wellness">Wellness</label>
-                    </div>
+                    <input type="hidden" id="interests" name="interests" required>
                 </div>
+                
+                
                 
                 <div class="text-center">
                     <button type="button" class="btn btn-custom" onclick="nextStep(5)">Next</button>
@@ -252,6 +362,56 @@
             nextButton.disabled = false; // Enable the button if the dates are valid
         }
     }
+    
+
+    function updatePeopleCount(change) {
+        const peopleInput = document.getElementById('people');
+        let currentValue = parseInt(peopleInput.value);
+
+        // Prevent the value from going below 1
+        if (currentValue + change >= 1) {
+            peopleInput.value = currentValue + change;
+        }
+    }
+
+
+    // Handle vibe selection (single selection)
+    const vibeTiles = document.querySelectorAll('.vibe-tile');
+    const vibeInput = document.getElementById('vibe');
+
+    vibeTiles.forEach(tile => {
+        tile.addEventListener('click', () => {
+            // Remove selected class from all vibe tiles
+            vibeTiles.forEach(t => t.classList.remove('selected'));
+            
+            // Add selected class to the clicked tile
+            tile.classList.add('selected');
+            
+            // Set the hidden input value to the selected tile's data-value
+            vibeInput.value = tile.getAttribute('data-value');
+        });
+    });
+
+    // Handle interests selection (multiple selections)
+    const interestTiles = document.querySelectorAll('.interest-tile');
+    const interestsInput = document.getElementById('interests');
+
+    interestTiles.forEach(tile => {
+        tile.addEventListener('click', () => {
+            // Toggle the selected state of the tile
+            tile.classList.toggle('selected');
+            
+            // Gather all selected values
+            const selectedValues = Array.from(interestTiles)
+                .filter(t => t.classList.contains('selected'))
+                .map(t => t.getAttribute('data-value'));
+            
+            // Update the hidden input field with selected values (comma-separated)
+            interestsInput.value = selectedValues.join(',');
+        });
+    });
+
+
 
 
     let currentStep = 1;
