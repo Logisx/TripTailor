@@ -101,26 +101,26 @@
         <!-- Step 1: Welcome Screen -->
         <div class="step active" id="step1">
             <div class="header text-center">
-                <h1>Welcome to AI Travel Planner</h1>
+                <h1>TripTailor</h1>
                 <p>Plan your next adventure effortlessly with our AI-powered tool.</p>
             </div>
             <div class="text-center">
-                <button class="btn btn-custom" onclick="nextStep(2)">Start</button>
+                <button class="btn btn-custom" onclick="nextStep(2)">Begin</button>
             </div>
         </div>
 
         <!-- Step 2: Trip Description -->
         <div class="step" id="step2">
             <div class="header text-center">
-                <h2>Let's Plan Your Trip</h2>
+                <h2>Tell about your plans</h2>
             </div>
             <form id="tripForm">
                 <div class="form-group">
-                    <label for="tripDescription">Describe your trip:</label>
-                    <textarea class="form-control" id="tripDescription" rows="3" placeholder="e.g., A relaxing beach trip in Spain" required></textarea>
+                    <label for="tripDescription">Describe your trip in details:</label>
+                    <textarea class="form-control" id="tripDescription" rows="3" placeholder="e.g., We are planning a 3-day family trip to Italy. We would like to do sightseeing in Rome and ..." required></textarea>
                 </div>
                 <div class="text-center">
-                    <button type="button" class="btn btn-custom" onclick="nextStep(3)">Next</button>
+                    <button type="button" class="btn btn-custom" onclick="nextStep(3)">Continue</button>
                 </div>
             </form>
         </div>
@@ -136,11 +136,19 @@
                     <input type="number" class="form-control" id="budget" placeholder="Enter your budget" required>
                 </div>
                 <div class="form-group">
-                    <label for="dates">Trip Dates:</label>
-                    <input type="date" class="form-control" id="dates" required>
+                    <label for="people">Number of People:</label>
+                    <input type="number" class="form-control" id="people" placeholder="e.g., 2" required>
+                </div>
+                <div class="form-group">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" class="form-control" id="startDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" class="form-control" id="endDate" required>
                 </div>
                 <div class="text-center">
-                    <button type="button" class="btn btn-custom" onclick="nextStep(4)">Next</button>
+                    <button type="button" class="btn btn-custom" id="nextButton" onclick="nextStep(4)" disabled>Next</button>
                 </div>
             </form>
         </div>
@@ -148,13 +156,9 @@
         <!-- Step 4: People and Interests -->
         <div class="step" id="step4">
             <div class="header text-center">
-                <h2>Who Are You Traveling With?</h2>
+                <h2>And a bit of details</h2>
             </div>
             <form>
-                <div class="form-group">
-                    <label for="people">Number of People:</label>
-                    <input type="number" class="form-control" id="people" placeholder="e.g., 2" required>
-                </div>
                 <div class="form-group">
                     <label for="vibe">Trip Vibe:</label>
                     <select class="form-control" id="vibe" required>
@@ -162,6 +166,7 @@
                         <option value="adventure">Adventure</option>
                         <option value="romantic">Romantic</option>
                         <option value="cultural">Cultural</option>
+                        <option value="leisure">Leisure</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -169,6 +174,10 @@
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="beach" value="beach">
                         <label class="form-check-label" for="beach">Beaches</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="sightseeing" value="sightseeing">
+                        <label class="form-check-label" for="sightseeing">Sightseeing</label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="nature" value="nature">
@@ -182,7 +191,20 @@
                         <input class="form-check-input" type="checkbox" id="nightlife" value="nightlife">
                         <label class="form-check-label" for="nightlife">Nightlife</label>
                     </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="food" value="food">
+                        <label class="form-check-label" for="food">Food</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="shopping" value="shopping">
+                        <label class="form-check-label" for="shopping">Shopping</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="wellness" value="wellness">
+                        <label class="form-check-label" for="wellness">Wellness</label>
+                    </div>
                 </div>
+                
                 <div class="text-center">
                     <button type="button" class="btn btn-custom" onclick="nextStep(5)">Next</button>
                 </div>
@@ -213,6 +235,25 @@
 </div>
 
 <script>
+    document.getElementById('startDate').addEventListener('change', validateDates);
+    document.getElementById('endDate').addEventListener('change', validateDates);
+
+    function validateDates() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const nextButton = document.getElementById('nextButton');
+        
+        if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+            alert("Start date cannot be later than the end date.");
+            document.getElementById('endDate').setCustomValidity("End date must be later than start date.");
+            nextButton.disabled = true; // Disable the button if the dates are invalid
+        } else {
+            document.getElementById('endDate').setCustomValidity(""); // Reset custom validity
+            nextButton.disabled = false; // Enable the button if the dates are valid
+        }
+    }
+
+
     let currentStep = 1;
     function nextStep(step) {
         document.getElementById(`step${currentStep}`).classList.remove('active');
