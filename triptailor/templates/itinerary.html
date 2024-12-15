@@ -51,7 +51,7 @@
             flex: 40%; padding: 15px; display: flex; flex-direction: column;
             justify-content: center; color: #333;
         }
-        .destination-card h5 { margin: 0 0 5px; font-size: 1.1rem; }
+        .destination-card h5 { margin: 0 0 5px; font-size: 1.25rem; font-weight: bolder;}
 
         /* Header */
         .header {
@@ -69,7 +69,7 @@
 
 <!-- Header -->
 <div class="header">
-    <button onclick="window.location.href='/home';">Home</button>
+    <button onclick="window.location.href='/';">Home</button>
     <h3>{{ trip_name }}</h3>
     <button onclick="downloadPDF()">Download PDF</button>
 </div>
@@ -173,7 +173,7 @@
     }
 
     function downloadPDF() {
-        alert("Download PDF functionality goes here.");
+        alert("Download PDF feature is in development.");
     }
 
     document.addEventListener('DOMContentLoaded', initializeMap);
