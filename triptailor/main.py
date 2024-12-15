@@ -8,8 +8,11 @@
 
 
 from flask import Flask, request, jsonify, render_template, session, redirect
+from flask_session import Session
 import json
 import time
+import redis
+import os
 import secrets
 import configparser
 from modeling.inference import InferencePipeline
@@ -20,7 +23,6 @@ _ = load_dotenv(override=True)
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(16)
-
 
 def init(app):
     config = configparser.ConfigParser()
@@ -36,6 +38,19 @@ def init(app):
         app.config['ip_address'] = config.get("config", "ip_address", fallback="127.0.0.1")
         app.config['port'] = config.getint("config", "port", fallback=5000)
         app.config['url'] = config.get("config", "url", fallback="http://127.0.0.1:5000")
+        
+        # Redis configuration
+        # Part of the code taken from https://testdriven.io/blog/flask-server-side-sessions/
+        try:
+            app.secret_key = os.getenv('FLASK_APP_SECRET_KEY', default='BAD_SECRET_KEY')
+
+            # Configure Redis for storing the session data on the server-side
+            app.config['SESSION_TYPE'] = config.get("config", "session_type", fallback='redis')
+            app.config['SESSION_PERMANENT'] = False
+            app.config['SESSION_USE_SIGNER'] = True
+            app.config['SESSION_REDIS'] = redis.from_url(config.get("config", "redis_url", fallback="redis://127.0.0.1:6379"))
+        except:
+            logger.error("Redis configuration error")
     
     except Exception as e:
         print(f"Error loading configs from {config_location}: {e}")
@@ -47,7 +62,14 @@ def init(app):
 
 init(app)
 
-itinerary_store = {}
+
+
+#itinerary_store = {}
+server_session = Session(app)
+
+
+
+
 
 @app.route('/config/')
 def config():
@@ -84,7 +106,8 @@ def generate_itinerary_route():
         _, _, itinerary_json = InferencePipeline().run_inference(user_input)
         logger.info('>>>>> Inference completed <<<<<')
     
-    itinerary_store['itinerary'] = itinerary_json
+    #itinerary_store['itinerary'] = itinerary_json
+    session['itinerary'] = itinerary_json
     return jsonify(itinerary_json), 200
 
 
@@ -99,7 +122,8 @@ def home():
 @app.route('/itinerary')
 def itinerary():
 
-    itinerary_data = itinerary_store['itinerary']
+    #itinerary_data = itinerary_store['itinerary']
+    itinerary_data = session['itinerary']
     print("ITINERARY DATA:", itinerary_data)
 
     #!!!!!!!!!!!!!!!!!!!!!!!!!
