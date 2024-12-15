@@ -99,6 +99,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+document.getElementById('startDate').addEventListener('change', validateDates);
+document.getElementById('endDate').addEventListener('change', validateDates);
+
 function validateDates() {
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
@@ -107,7 +110,7 @@ function validateDates() {
     if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
         alert("Start date cannot be later than the end date.");
         document.getElementById('endDate').setCustomValidity("End date must be later than start date.");
-        nextButton.disabled = false; // Disable the button if the dates are invalid
+        nextButton.disabled = true; // Disable the button if the dates are invalid (Change to true after fix)
     } else {
         document.getElementById('endDate').setCustomValidity(""); // Reset custom validity
         nextButton.disabled = false; // Enable the button if the dates are valid

@@ -21,7 +21,7 @@ def init(app):
     
     # Configure the app settings
     try:
-        print("INIT FUNCTION")
+        logger.info("Initializing app")
         if not config.read(config_location):
             raise FileNotFoundError(f"Config file not found at: {config_location}")
 
@@ -39,9 +39,10 @@ def init(app):
             app.config['SESSION_REDIS'] = redis.from_url(config.get("config", "redis_url", fallback="redis://127.0.0.1:6379"))
         except:
             logger.error("Redis configuration error")
+        logger.info("App successfully initialized")
     
     except Exception as e:
-        print(f"Error loading configs from {config_location}: {e}")
+        logger.error(f"Error loading configs from {config_location}: {e}")
         app.config['DEBUG'] = False
         app.config['ip_address'] = "127.0.0.1"
         app.config['port'] = 5000

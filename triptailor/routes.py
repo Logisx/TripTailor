@@ -13,6 +13,7 @@ def setup_routes(app):
         '''
         Renders application homescreen page with a user form.
         '''
+        logger.info("Accessed root page")
         return render_template('index.html')
 
 
@@ -44,6 +45,7 @@ def setup_routes(app):
         '''
         Renders page with the itinerary information.
         '''
+        logger.info("Accessed itinerary page")
         itinerary_data = session.get('itinerary', {})
         if not app.config['DEBUG']:
             if not itinerary_data:

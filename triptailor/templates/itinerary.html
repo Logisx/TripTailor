@@ -14,7 +14,7 @@
 
 <!-- Header -->
 <div class="header">
-    <button onclick="window.location.href='/';">Home</button>
+    <button onclick="clearDataAndRedirect()">Home</button>
     <h3>{{ trip_name }}</h3>
     <button onclick="downloadPDF()">Download PDF</button>
 </div>
@@ -199,7 +199,13 @@
             });
     }
 
-
+    function clearDataAndRedirect() {
+        // Clear all saved form data in localStorage
+        localStorage.removeItem('tripData');
+        
+        // Redirect to the home page
+        window.location.href = '/';
+    }
 
 
     document.addEventListener('DOMContentLoaded', initializeMap);
