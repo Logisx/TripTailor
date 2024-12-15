@@ -58,6 +58,10 @@
     </div>
 </div>
 
+
+<!-- jsPDF library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script>
@@ -117,9 +121,86 @@
         showMarkers(dayIndex);
     }
 
-    function downloadPDF() {
-        alert("Download PDF feature is in development.");
+    async function downloadPDF() {
+        alert("Generating the PDF may take up to 30 seconds. Please wait...");
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+        const pageHeight = pdf.internal.pageSize.height;
+        let yPosition = 10;
+
+        const tripName = document.querySelector("h3").innerText;
+        pdf.setFontSize(18);
+        pdf.text(tripName, 10, yPosition);
+        yPosition += 10;
+
+        const days = document.querySelectorAll(".itinerary-day");
+
+        for (const day of days) {
+            const dayIndex = Array.from(days).indexOf(day);
+            pdf.setFontSize(16);
+            if (yPosition + 10 > pageHeight) {
+                pdf.addPage();
+                yPosition = 10;
+            }
+            pdf.text(`Day ${dayIndex + 1}`, 10, yPosition);
+            yPosition += 10;
+
+            const activities = day.querySelectorAll(".destination-card");
+            for (const activity of activities) {
+                const name = activity.querySelector("h5").innerText;
+                const description = activity.querySelector("p").innerText;
+                const duration = activity.querySelectorAll("p")[1].innerText;
+                const imageUrl = activity.querySelector("img").src;
+
+                if (yPosition + 40 > pageHeight) {
+                    pdf.addPage();
+                    yPosition = 10;
+                }
+
+                // Add Activity Text
+                pdf.setFontSize(14);
+                pdf.text(`- ${name}`, 15, yPosition);
+                yPosition += 6;
+
+                pdf.setFontSize(12);
+                pdf.text(description, 20, yPosition);
+                yPosition += 6;
+
+                pdf.text(duration, 20, yPosition);
+                yPosition += 8;
+
+                // Add Image
+                try {
+                    const imgData = await loadImageBase64(imageUrl);
+                    pdf.addImage(imgData, "JPEG", 20, yPosition, 50, 30);
+                    yPosition += 35;
+                } catch (error) {
+                    console.error("Error loading image:", error);
+                    yPosition += 10;
+                }
+            }
+        }
+
+        pdf.save(`${tripName}.pdf`);
     }
+
+    // Helper Function to Convert Image URLs to Base64
+    function loadImageBase64(url) {
+        return fetch(`/proxy-image?url=${encodeURIComponent(url)}`)
+            .then(response => response.blob())
+            .then(blob => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            });
+    }
+
+
+
 
     document.addEventListener('DOMContentLoaded', initializeMap);
 

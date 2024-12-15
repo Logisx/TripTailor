@@ -1,8 +1,8 @@
 # TODO
 
 # Fix buttons on index
-# Divide templates to css js html
-# Fix loading circle
+
+
 
 
 
@@ -12,6 +12,7 @@ import json
 import time
 import redis
 import os
+import requests
 import secrets
 import configparser
 from modeling.inference import InferencePipeline
@@ -98,7 +99,7 @@ def generate_itinerary_route():
         logger.info('>>>>> Inference started <<<<<')
         with open('triptailor/modeling/itinerary_example.json', 'r') as file:
             itinerary_json = json.load(file)
-        time.sleep(10) # To imitate delay
+        time.sleep(1) # To imitate delay
         logger.info('>>>>> Inference completed <<<<<')
     else:
         logger.info('>>>>> Inference started <<<<<')
@@ -153,6 +154,17 @@ def itinerary():
         end_date=end_date,
         daily_itineraries=daily_itineraries
     )
+
+
+
+@app.route('/proxy-image')
+def proxy_image():
+    image_url = request.args.get('url')
+    response = requests.get(image_url, stream=True)
+    headers = {
+        "Content-Type": response.headers["Content-Type"]
+    }
+    return response.content, response.status_code, headers
 
 
 if __name__ == '__main__':
