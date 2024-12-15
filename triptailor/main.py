@@ -1,5 +1,9 @@
 # TODO
 # Itinerary is stored in a global dict
+# Improve google maps tool
+# Redis?
+# Fix buttons on index
+# Divide templates to css js html
 
 
 

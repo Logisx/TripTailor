@@ -6,14 +6,14 @@
     <title>{{ trip_name }}</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Leaflet CSS for Map -->
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         /* General Styles */
         body { margin: 0; font-family: Arial, sans-serif; }
         .itinerary-container { display: flex; height: calc(100vh - 70px); }
 
-        /* Day Tabs */
+        /* Days Header */
         .day-tabs {
             display: flex; overflow-x: auto; background: #f8f9fa; white-space: nowrap;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); padding: 10px 0;
@@ -21,12 +21,14 @@
         .day-tab {
             flex: 0 0 auto; margin: 0 10px; padding: 10px 15px; border-radius: 8px;
             font-weight: bold; cursor: pointer; transition: transform 0.2s;
+            border: 2px solid #ddd; /* Border for inactive buttons */
+            color: #555;
         }
         .day-tab:hover { transform: scale(1.05); }
-        .day-1 { background-color: #ffcad4; color: #842029; }
-        .day-2 { background-color: #ffe59d; color: #664d03; }
-        .day-3 { background-color: #cce5ff; color: #004085; }
-        .day-tab.active { border: 2px solid #333; }
+        .day-tab.active {
+            background-color: #007bff; color: #fff;
+            border-color: #007bff; /* Border for active button */
+        }
 
         /* Tile Section */
         .tile-section {
@@ -37,7 +39,7 @@
         }
         .map-container { position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
 
-        /* Destination Card */
+        /* Destination Tile */
         .destination-card {
             display: flex; margin-bottom: 20px; background: #fff; border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); overflow: hidden;
@@ -49,8 +51,7 @@
             flex: 40%; padding: 15px; display: flex; flex-direction: column;
             justify-content: center; color: #333;
         }
-        .destination-card h5 { margin: 0 0 5px 0; font-size: 1.1rem; }
-        .destination-card p { margin: 0; font-size: 0.9rem; color: #555; }
+        .destination-card h5 { margin: 0 0 5px; font-size: 1.1rem; }
 
         /* Header */
         .header {
@@ -60,9 +61,8 @@
         }
         .header button {
             border: none; border-radius: 4px; padding: 8px 12px;
-            background-color: #007bff; color: #fff; font-size: 0.9rem; cursor: pointer;
+            background-color: #007bff; color: #fff; cursor: pointer;
         }
-        .header button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
@@ -74,31 +74,31 @@
     <button onclick="downloadPDF()">Download PDF</button>
 </div>
 
-<!-- Day Tabs -->
-<div class="day-tabs">
-    {% for day in daily_itineraries %}
-        <div class="day-tab day-{{ loop.index }} {% if loop.first %}active{% endif %}" 
-             onclick="showDay({{ loop.index }})">
-            Day {{ loop.index }}
-        </div>
-    {% endfor %}
-</div>
-
-<!-- Main Content -->
 <div class="itinerary-container">
-    <!-- Left: Scrollable Destination Tiles -->
+    <!-- Left: Days Tabs and Tiles -->
     <div class="tile-section">
+        <!-- Days Header -->
+        <div class="day-tabs" id="dayTabs">
+            {% for day in daily_itineraries %}
+                <div class="day-tab {% if loop.first %}active{% endif %}" 
+                     onclick="showDay({{ loop.index0 }})" 
+                     id="day-tab-{{ loop.index0 }}">
+                    Day {{ loop.index }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Destination Tiles -->
         {% for day in daily_itineraries %}
-        <div class="itinerary-day" id="day-{{ loop.index }}" {% if not loop.first %}style="display: none;"{% endif %}>
+        <div class="itinerary-day" id="day-{{ loop.index0 }}" {% if not loop.first %}style="display: none;"{% endif %}>
             {% for activity_group in day.activities %}
                 {% for activity in activity_group.main_activity %}
                     <div class="destination-card">
                         <img src="{{ activity.image_url }}" alt="{{ activity.name }}">
                         <div class="text-content">
                             <h5>{{ activity.name }}</h5>
-                            <p><strong>Why Visit:</strong> {{ activity.description }}</p>
-                            <p><strong>Duration:</strong> {{ activity.duration }} hours</p>
-                            <p><strong>Cost:</strong> €{{ activity.price }}</p>
+                            <p>{{ activity.description }}</p>
+                            <p>Duration: {{ activity.duration }} hours</p>
                         </div>
                     </div>
                 {% endfor %}
@@ -107,54 +107,73 @@
         {% endfor %}
     </div>
 
-    <!-- Right: Fixed Map -->
+    <!-- Right: Map -->
     <div class="map-section">
         <div id="map" class="map-container"></div>
     </div>
 </div>
 
-<!-- Bootstrap JS, Leaflet JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
 <script>
-    // Initialize Leaflet Map
+    let map;
+    const markers = [];
+    const itineraryData = [
+        {% for day in daily_itineraries %}
+            [
+                {% for activity_group in day.activities %}
+                    {% for activity in activity_group.main_activity %}
+                        { lat: {{ activity.geolocation.lat }}, lng: {{ activity.geolocation.lng }}, name: "{{ activity.name }}" },
+                    {% endfor %}
+                {% endfor %}
+            ],
+        {% endfor %}
+    ];
+
     function initializeMap() {
-        const map = L.map('map').setView([41.8902, 12.4922], 13); // Default center example: Rome
+        map = L.map('map').setView([41.8902, 12.4922], 10); // Default location
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
-
-        // Add markers dynamically
-        {% for day in daily_itineraries %}
-            {% for activity_group in day.activities %}
-                {% for activity in activity_group.main_activity %}
-                    L.marker([{{ activity.geolocation.lat }}, {{ activity.geolocation.lng }}])
-                        .addTo(map)
-                        .bindPopup(`
-                            <b>{{ activity.name }}</b><br>
-                            {{ activity.description }}<br>
-                            Duration: {{ activity.duration }} hours<br>
-                            Price: €{{ activity.price }}
-                        `);
-                {% endfor %}
-            {% endfor %}
-        {% endfor %}
+        showMarkers(0); // Show Day 1 markers initially
     }
 
-    // Day Tab Navigation
+    function showMarkers(dayIndex) {
+        // Remove old markers
+        markers.forEach(marker => map.removeLayer(marker));
+        markers.length = 0;
+
+        const bounds = [];
+        itineraryData[dayIndex].forEach(activity => {
+            const marker = L.marker([activity.lat, activity.lng])
+                .addTo(map)
+                .bindPopup(activity.name);
+            markers.push(marker);
+            bounds.push([activity.lat, activity.lng]);
+        });
+
+        // Adjust the map to fit the new markers
+        if (bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [50, 50] });
+        }
+    }
+
     function showDay(dayIndex) {
-        document.querySelectorAll('.itinerary-day').forEach(day => day.style.display = 'none');
-        document.getElementById(`day-${dayIndex}`).style.display = 'block';
+        // Update visible tiles
+        document.querySelectorAll('.itinerary-day').forEach((day, index) => {
+            day.style.display = index === dayIndex ? 'block' : 'none';
+        });
 
+        // Update active tab
         document.querySelectorAll('.day-tab').forEach(tab => tab.classList.remove('active'));
-        document.querySelector(`.day-tab:nth-child(${dayIndex})`).classList.add('active');
+        document.getElementById(`day-tab-${dayIndex}`).classList.add('active');
+
+        // Update map markers and region
+        showMarkers(dayIndex);
     }
 
-    // PDF Download Placeholder
     function downloadPDF() {
-        window.alert("PDF Download functionality will be implemented here.");
+        alert("Download PDF functionality goes here.");
     }
 
     document.addEventListener('DOMContentLoaded', initializeMap);
