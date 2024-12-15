@@ -161,6 +161,7 @@ label {
 
 /* Loading Overlay Styles */
 .overlay {
+    display: flex;
     position: fixed;
     top: 0;
     left: 0;
@@ -174,6 +175,9 @@ label {
 }
 
 .loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
 }
 
