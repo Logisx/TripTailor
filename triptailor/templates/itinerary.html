@@ -9,89 +9,97 @@
     <!-- Leaflet CSS for Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
-        .container { max-width: 900px; margin: 50px auto; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .itinerary-day { margin-bottom: 20px; }
-        .map-container { height: 400px; margin-top: 30px; }
-        .btn-custom { background-color: #007bff; color: white; }
-        .btn-custom:hover { background-color: #0056b3; }
+        /* Custom Styling */
+        body { margin: 0; font-family: Arial, sans-serif; }
+        .itinerary-container { display: flex; height: 100vh; }
+        .tile-section {
+            flex: 1; overflow-y: scroll; padding: 20px; background-color: #f8f9fa;
+        }
+        .map-section {
+            flex: 1; position: relative; background-color: #ddd;
+        }
+        .map-container { position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+        .itinerary-day { margin-bottom: 30px; }
+        .destination-card {
+            margin-bottom: 20px; padding: 15px;
+            background: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .destination-card img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; }
+        .day-tag {
+            font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;
+            display: inline-block; padding: 5px 10px; border-radius: 8px;
+        }
+        .day-1 { background-color: #ffcad4; color: #842029; }
+        .day-2 { background-color: #ffe59d; color: #664d03; }
+        .day-3 { background-color: #cce5ff; color: #004085; }
+        /* Map Marker Popups */
+        .leaflet-popup-content { font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>{{ trip_name }}</h1>
-            <p>
-                Explore {{ destination_cities }} in {{ destination_country }} 
-                from {{ start_date }} to {{ end_date }}.
-            </p>
-            <a href="/" class="btn btn-link">Back to Home</a>
-        </div>
-
-        <!-- Itinerary Display -->
-        <div id="itineraryDisplay">
-            {% for day in daily_itineraries %}
-                <div class="itinerary-day">
-                    <h3>Day {{ loop.index }} ({{ day.date }})</h3>
-                    {% for activity_group in day.activities %}
-                        {% for activity in activity_group.main_activity %}
-                            <div>
-                                <h5>{{ activity.name }}</h5>
-                                <p>Type: {{ activity.type }}</p>
-                                <p>Duration: {{ activity.duration }} hours</p>
-                                <p>Description: {{ activity.description }}</p>
-                                <img src="{{ activity.image_url }}" alt="{{ activity.name }}" style="width:100%;max-width:300px;">
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-                </div>
-            {% endfor %}
-        </div>
-
-        <!-- Map Container -->
-        <div id="map" class="map-container"></div>
-
-        <!-- Edit Itinerary -->
-        <div class="form-group text-center">
-            <button class="btn btn-custom" onclick="editItinerary()">Edit Itinerary</button>
-        </div>
-
-        <!-- Save & Share Itinerary -->
-        <div class="form-group text-center">
-            <button class="btn btn-custom" onclick="saveItinerary()">Save & Share</button>
-        </div>
-    </div>
-
-    <!-- Bootstrap JS, Popper.js, and Leaflet JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.5/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
-    <script>
-        // Initialize Leaflet Map
-        function initializeMap() {
-            const map = L.map('map').setView([41.8902, 12.4922], 13);  // Example coordinates for Rome
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            // Add markers dynamically
-            {% for day in daily_itineraries %}
-                {% for activity_group in day.activities %}
-                    {% for activity in activity_group.main_activity %}
-                        L.marker([{{ activity.geolocation.lat }}, {{ activity.geolocation.lng }}])
-                            .addTo(map)
-                            .bindPopup("<b>{{ activity.name }}</b><br>{{ activity.description }}");
-                    {% endfor %}
+<div class="itinerary-container">
+    <!-- Left: Scrollable Destination Tiles -->
+    <div class="tile-section">
+        <h2 class="mb-4 text-center">{{ trip_name }}</h2>
+        {% for day in daily_itineraries %}
+        <div class="itinerary-day">
+            <div class="day-tag day-{{ loop.index }}">
+                Day {{ loop.index }} - {{ day.date }}
+            </div>
+            {% for activity_group in day.activities %}
+                {% for activity in activity_group.main_activity %}
+                    <div class="destination-card">
+                        <h5>{{ activity.name }}</h5>
+                        <img src="{{ activity.image_url }}" alt="{{ activity.name }}">
+                        <p><strong>Why Visit:</strong> {{ activity.description }}</p>
+                        <p><strong>Duration:</strong> {{ activity.duration }} hours</p>
+                        <p><strong>Cost:</strong> {{ activity.price }} EUR</p>
+                    </div>
                 {% endfor %}
             {% endfor %}
-        }
+        </div>
+        {% endfor %}
+    </div>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeMap();
-        });
-    </script>
+    <!-- Right: Fixed Map -->
+    <div class="map-section">
+        <div id="map" class="map-container"></div>
+    </div>
+</div>
+
+<!-- Bootstrap JS, Leaflet JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.5/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+    // Initialize Leaflet Map
+    function initializeMap() {
+        const map = L.map('map').setView([41.8902, 12.4922], 13); // Default center example: Rome
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add markers dynamically
+        {% for day in daily_itineraries %}
+            {% for activity_group in day.activities %}
+                {% for activity in activity_group.main_activity %}
+                    L.marker([{{ activity.geolocation.lat }}, {{ activity.geolocation.lng }}])
+                        .addTo(map)
+                        .bindPopup(`
+                            <b>{{ activity.name }}</b><br>
+                            {{ activity.description }}<br>
+                            Duration: {{ activity.duration }} hours<br>
+                            Price: €{{ activity.price }}
+                        `);
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+    }
+
+    document.addEventListener('DOMContentLoaded', initializeMap);
+</script>
 </body>
 </html>

@@ -73,7 +73,7 @@ def generate_itinerary_route():
         logger.info('>>>>> Inference started <<<<<')
         with open('triptailor/modeling/itinerary_example.json', 'r') as file:
             itinerary_json = json.load(file)
-        time.sleep(5) # To imitate delay
+        time.sleep(1) # To imitate delay
         logger.info('>>>>> Inference completed <<<<<')
     else:
         logger.info('>>>>> Inference started <<<<<')
@@ -98,14 +98,16 @@ def itinerary():
     itinerary_data = itinerary_store['itinerary']
     print("ITINERARY DATA:", itinerary_data)
 
-    if not itinerary_data:
-        return redirect('/')
-    else:
-        try:
-            itinerary_data = json.loads(itinerary_data)
-        except json.JSONDecodeError:
-            print("Error: itinerary_data is not valid JSON.")
-            return redirect('/')    
+    #!!!!!!!!!!!!!!!!!!!!!!!!!
+    if not app.config['DEBUG']:
+        if not itinerary_data:
+            return redirect('/')
+        else:
+            try:
+                itinerary_data = json.loads(itinerary_data)
+            except json.JSONDecodeError:
+                print("Error: itinerary_data is not valid JSON.")
+                return redirect('/')    
 
 
     trip_name = itinerary_data.get("trip_name", "Untitled Trip")
