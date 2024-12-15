@@ -219,7 +219,7 @@ class Config:
     }
 
 class AgentState(TypedDict):
-    user_query: str
+    user_input: dict
     user_preferences: UserPreferences
     travel_ideas: TravelIdeas
     itinerary: str

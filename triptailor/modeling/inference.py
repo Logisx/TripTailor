@@ -11,19 +11,19 @@ from langchain_openai import ChatOpenAI
 
 class InferencePipeline:
     @staticmethod
-    def run_inference(user_prompt=None):           
+    def run_inference(user_input=None):           
         with SqliteSaver.from_conn_string(":memory:") as memory:
 
             # Init the agent
             #tool = TavilySearchResults(max_results=2)
             model = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
-            agent = Agent(model, system=user_prompt, checkpointer=memory)
+            agent = Agent(model, system=user_input, checkpointer=memory)
             thread = {"configurable": {"thread_id": "1"}}
             response = []
 
             # Run streaming
             logger.info("Streaming the responses")
-            for single_response in agent.graph.stream({'user_query': user_prompt}, thread):
+            for single_response in agent.graph.stream({'user_input': user_input}, thread):
                 print(single_response)
                 response.append(single_response)
             logger.info("Streaming ended")

@@ -5,13 +5,20 @@ from modeling.data_schemas import user_preferences_parser, travel_ideas_parser, 
 PREFERENCES_EXTRACTION_PROMPT = PromptTemplate(
     template = """
     You are an expert travel agent tasked with extracting structured information to fill out a questionnaire about the customer's planned trip.
-    Based on the customer's query, extract the key information about their trip preferences and format it accordingly.
+    Based on the customer's query and the form he filled in, extract the key information about their trip preferences and format it accordingly.
 
     Provide the extracted preferences in the following structured format:
     {format_instructions}
 
     Customer's Query:
     {user_query}
+
+    Customer's form answers:
+    - Budget (in EUR): {budget}
+    - Number of people travelling: {people_number}
+    - Approximate start and end dates of the trip: {start_date} - {end_date}
+    - Expected trip vibe (optional): {vibe}
+    - Travel interests (optional): {interests}
     """,
     input_variables=["user_query"],
     partial_variables={"format_instructions": user_preferences_parser.get_format_instructions()},

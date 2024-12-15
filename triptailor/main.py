@@ -65,13 +65,10 @@ def generate_itinerary_route():
     """
     Endpoint to generate a travel itinerary based on user input.
     """
-    # Parse input JSON
-    user_input = request.json ### EMPTY INPUT NOW
-    print("USER INPUT", user_input)
-    logger.info(f"Received user input: {0}", user_input)
-    
-    # Validate required fields    
+    user_input = request.json 
+    logger.info(f"Received user input: {user_input}")
 
+    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
     if app.config['DEBUG']:
         logger.info('>>>>> Inference started <<<<<')
         with open('triptailor/modeling/itinerary_example.json', 'r') as file:
@@ -80,7 +77,7 @@ def generate_itinerary_route():
         logger.info('>>>>> Inference completed <<<<<')
     else:
         logger.info('>>>>> Inference started <<<<<')
-        _, _, itinerary_json = InferencePipeline().run_inference(user_prompt)
+        _, _, itinerary_json = InferencePipeline().run_inference(user_input)
         logger.info('>>>>> Inference completed <<<<<')
     
     itinerary_store['itinerary'] = itinerary_json
@@ -99,9 +96,17 @@ def home():
 def itinerary():
 
     itinerary_data = itinerary_store['itinerary']
+    print("ITINERARY DATA:", itinerary_data)
 
     if not itinerary_data:
-        return redirect('/')    
+        return redirect('/')
+    else:
+        try:
+            itinerary_data = json.loads(itinerary_data)
+        except json.JSONDecodeError:
+            print("Error: itinerary_data is not valid JSON.")
+            return redirect('/')    
+
 
     trip_name = itinerary_data.get("trip_name", "Untitled Trip")
     destination_country = itinerary_data.get("destination_country", "Unknown Country")

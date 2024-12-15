@@ -36,7 +36,15 @@ class Agent:
     def _preferences_extraction_node(self, state: AgentState):
         logger.info("Calling preferences extraction node")
         chain = PREFERENCES_EXTRACTION_PROMPT | self.model | user_preferences_parser
-        response = chain.invoke({"user_query": state['user_query']})
+        user_input = state['user_input']
+        response = chain.invoke({"user_query": user_input['tripDescription'],
+                                  "budget": user_input['budget'],
+                                  "people_number": user_input['people'],
+                                  "start_date": user_input['startDate'],
+                                  "end_date": user_input['endDate'],
+                                  "vibe": user_input['vibe'],
+                                  "interests": user_input['interests']
+                                  })
         return {"user_preferences": response}
 
 
