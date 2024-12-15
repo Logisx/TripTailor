@@ -10,6 +10,9 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 from langchain_openai import ChatOpenAI
 
 class InferencePipeline:
+    '''
+    Pipeline running inference from an AI agent based on the user inputted data. Returns personalized itinerary in json format.
+    '''
     @staticmethod
     def run_inference(user_input=None):           
         with SqliteSaver.from_conn_string(":memory:") as memory:

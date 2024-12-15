@@ -80,11 +80,11 @@
     ];
 
     function initializeMap() {
-        map = L.map('map').setView([41.8902, 12.4922], 10); // Default location
+        map = L.map('map').setView([41.8902, 12.4922], 10); 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
-        showMarkers(0); // Show Day 1 markers initially
+        showMarkers(0);
     }
 
     function showMarkers(dayIndex) {

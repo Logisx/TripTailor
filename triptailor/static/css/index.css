@@ -2,10 +2,10 @@ body {
     background-color: #f5f7fa;
     font-family: Arial, sans-serif;
 }
-/* General label styling */
+
 label {
-    font-size: 1.25rem; /* Increased font size for labels */
-    font-weight: bold; /* Bold for emphasis */
+    font-size: 1.25rem; 
+    font-weight: bold;
     display: block;
     margin-bottom: 10px;
 }
@@ -46,32 +46,29 @@ label {
     align-items: center;
     width: auto;
 }
-/* Flexbox layout to align the start date and end date side by side */
+
 .form-group.d-flex {
     display: flex;
-    justify-content: space-between; /* Adjust spacing between the two inputs */
-    gap: 20px; /* Optional: adjust the gap between the fields */
+    justify-content: space-between; 
+    gap: 20px; 
 }
 
 .form-group .d-flex.flex-column {
     flex: 1;
 }
 
-/* Optional: You can adjust the width if necessary */
 .form-control {
     width: 100%;
 }
 
-/* General tile styling */
 .tiles-container {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-/* Add a gap between the first and second rows */
 .tiles-container.second-row {
-    margin-top: 20px; /* Adjust this value for more or less space */
+    margin-top: 20px; 
 }
 
 .tile,
@@ -84,45 +81,40 @@ label {
     color: black;
     cursor: pointer;
     text-align: center;
-    flex: 1 1 calc(25% - 10px); /* For 4 tiles per row */
+    flex: 1 1 calc(25% - 10px); 
     box-sizing: border-box;
-    transition: all 0.2s ease-in-out; /* Smooth transition */
-    height: 80px; /* Fixed height for increased size */
-    display: flex; /* Flexbox for content alignment */
-    align-items: center; /* Vertically center content */
-    justify-content: center; /* Horizontally center content */
+    transition: all 0.2s ease-in-out; 
+    height: 80px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
 }
 
-/* Hover effect for tiles: darker border */
 .tile:hover,
 .vibe-tile:hover,
 .interest-tile:hover {
-    border-color: #444; /* Slightly darker border */
+    border-color: #444; 
 }
 
-/* Selected tile effect */
 .selected {
     border-width: 3px;
     border-color: black;
     font-weight: bold;
 }
 
-/* Specific styles for the vibe tiles */
 .vibe-tile {
     font-weight: normal;
 }
 
-/* Specific styles for the interest tiles */
 .interest-tile {
     font-weight: normal;
 }
 
-/* Responsive layout */
 @media (max-width: 768px) {
     .tile,
     .vibe-tile,
     .interest-tile {
-        flex: 1 1 calc(50% - 10px); /* Two tiles per row on smaller screens */
+        flex: 1 1 calc(50% - 10px);
     }
 }
 
@@ -130,15 +122,14 @@ label {
     .tile,
     .vibe-tile,
     .interest-tile {
-        flex: 1 1 100%; /* One tile per row on mobile */
+        flex: 1 1 100%;
     }
 }
 
-/* Style for the separator line */
 .form-separator {
     border: none;
-    border-top: 1px solid #ddd; /* Thin line */
-    margin: 20px 0; /* Space around the line */
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
 }
 
 .btn-custom {
@@ -159,7 +150,6 @@ label {
     background-color: #007bff;
 }
 
-/* Loading Overlay Styles */
 .overlay {
     display: flex;
     position: fixed;
@@ -167,11 +157,11 @@ label {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
-    display: none; /* Hidden by default */
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: none; 
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* Ensure it's above other content */
+    z-index: 9999; 
 }
 
 .loading-content {

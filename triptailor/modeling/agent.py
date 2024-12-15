@@ -12,6 +12,9 @@ from modeling.tools.google_maps_tool import GoogleMapsTool
 from loguru import logger
 
 class Agent:
+    '''
+    AI agent capable of generating personalized travel itinerary based on the user preferences
+    '''
     def __init__(self, model, checkpointer, tools=None, system=""):
         logger.info("Agent initialization started")
         self.system = system
@@ -68,35 +71,26 @@ class Agent:
         itinerary = state['itinerary']
         enhanced_itinerary = []
 
-        # Iterate over each day in the itinerary
         for day in itinerary['daily_itineraries']:
             enhanced_activities = []
             
-            # Iterate over each major activity for the day
             for activity in day['activities']:
-                # Enhance main activity destinations
                 enhanced_main_activity = []
                 for destination in activity['main_activity']:
-                    # Call the Google Maps Tool to get geolocation and image
                     response = google_maps_tool.invoke({"destination": destination['name']})
                     
-                    # Add the enhanced data (geolocation and image URL) to the destination
                     destination['geolocation'] = response.get('geolocation')
                     destination['image_url'] = response.get('image_url')
                     
-                    # Add the enhanced destination to the main activity list
                     enhanced_main_activity.append(destination)
 
-                # Add the enhanced activity (without alternatives)
                 enhanced_activity = {
                     "main_activity": enhanced_main_activity
                 }
                 enhanced_activities.append(enhanced_activity)
 
-            # Update the day's activities with the enhanced activities
             day['activities'] = enhanced_activities
             enhanced_itinerary.append(day)
 
-        # Return the enhanced itinerary
         return {"itinerary": {"daily_itineraries": enhanced_itinerary}}
 

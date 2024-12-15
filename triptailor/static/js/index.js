@@ -8,7 +8,7 @@ function saveForm() {
         people: document.getElementById('people').value || '',
         vibe: document.getElementById('vibe').value || '',
         interests: document.getElementById('interests').value || '',
-        currentStep: currentStep // Save the current step
+        currentStep: currentStep 
     };
 
     // Save the data to localStorage
@@ -24,11 +24,10 @@ function restoreForm() {
         document.getElementById('budget').value = savedData.budget || '';
         document.getElementById('startDate').value = savedData.startDate || '';
         document.getElementById('endDate').value = savedData.endDate || '';
-        document.getElementById('people').value = savedData.people || 2; // Default to 2 people if undefined
+        document.getElementById('people').value = savedData.people || 2; 
         document.getElementById('vibe').value = savedData.vibe || '';
         document.getElementById('interests').value = savedData.interests || '';
-        
-        // Manually restore the selected vibe and interests tiles
+
         document.querySelectorAll('.vibe-tile').forEach(tile => {
             if (tile.getAttribute('data-value') === savedData.vibe) {
                 tile.classList.add('selected');
@@ -50,14 +49,13 @@ function restoreForm() {
 
 // Function to add event listeners to all form fields
 function addEventListeners() {
-    // Add event listeners for each form field
+    
     document.getElementById('tripDescription').addEventListener('input', saveForm);
     document.getElementById('budget').addEventListener('input', saveForm);
     document.getElementById('people').addEventListener('input', saveForm);
     document.getElementById('startDate').addEventListener('change', saveForm);
     document.getElementById('endDate').addEventListener('change', saveForm);
 
-    // Add listeners for the vibe and interest tiles (click events)
     document.querySelectorAll('.vibe-tile').forEach(tile => {
         tile.addEventListener('click', saveForm);
     });
@@ -71,11 +69,9 @@ function addEventListeners() {
 document.addEventListener('DOMContentLoaded', function () {
     addEventListeners();
 
-    // Retrieve saved data from localStorage
     const savedData = JSON.parse(localStorage.getItem('tripData'));
     
     if (savedData) {
-        // Restore form fields
         document.getElementById('tripDescription').value = savedData.tripDescription;
         document.getElementById('budget').value = savedData.budget;
         document.getElementById('people').value = savedData.people;
@@ -84,14 +80,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('vibe').value = savedData.vibe;
         document.getElementById('interests').value = savedData.interests;
 
-        // Restore the current step
-        currentStep = savedData.currentStep || 1; // Default to step 1 if not available
+        currentStep = savedData.currentStep || 1; 
 
-        // Remove 'active' class from all steps
         const allSteps = document.querySelectorAll('.step');
         allSteps.forEach(step => step.classList.remove('active'));
 
-        // Add 'active' class to the current step
         document.getElementById(`step${currentStep}`).classList.add('active');
         updateProgressBar();
     }
@@ -110,10 +103,10 @@ function validateDates() {
     if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
         alert("Start date cannot be later than the end date.");
         document.getElementById('endDate').setCustomValidity("End date must be later than start date.");
-        nextButton.disabled = true; // Disable the button if the dates are invalid (Change to true after fix)
+        nextButton.disabled = true; 
     } else {
-        document.getElementById('endDate').setCustomValidity(""); // Reset custom validity
-        nextButton.disabled = false; // Enable the button if the dates are valid
+        document.getElementById('endDate').setCustomValidity(""); 
+        nextButton.disabled = false;
     }
 }
 
@@ -122,7 +115,6 @@ function updatePeopleCount(change) {
     const peopleInput = document.getElementById('people');
     let currentValue = parseInt(peopleInput.value);
 
-    // Prevent the value from going below 1
     if (currentValue + change >= 1) {
         peopleInput.value = currentValue + change;
     }
@@ -135,13 +127,10 @@ const vibeInput = document.getElementById('vibe');
 
 vibeTiles.forEach(tile => {
     tile.addEventListener('click', () => {
-        // Remove selected class from all vibe tiles
         vibeTiles.forEach(t => t.classList.remove('selected'));
         
-        // Add selected class to the clicked tile
         tile.classList.add('selected');
         
-        // Set the hidden input value to the selected tile's data-value
         vibeInput.value = tile.getAttribute('data-value');
     });
 });
@@ -152,21 +141,15 @@ const interestsInput = document.getElementById('interests');
 
 interestTiles.forEach(tile => {
     tile.addEventListener('click', () => {
-        // Toggle the selected state of the tile
         tile.classList.toggle('selected');
         
-        // Gather all selected values
         const selectedValues = Array.from(interestTiles)
             .filter(t => t.classList.contains('selected'))
             .map(t => t.getAttribute('data-value'));
         
-        // Update the hidden input field with selected values (comma-separated)
         interestsInput.value = selectedValues.join(',');
     });
 });
-
-
-
 
 
 let currentStep = 1;
@@ -191,7 +174,7 @@ function submitForm() {
         endDate: document.getElementById('endDate')?.value || '',
         people: document.getElementById('people')?.value || '',
         vibe: document.getElementById('vibe')?.value || '',
-        interests: document.getElementById('interests')?.value || '' // Ensure it's populated
+        interests: document.getElementById('interests')?.value || ''
     };
 
     // Show the loading overlay
@@ -215,10 +198,9 @@ function submitForm() {
         setTimeout(() => {
             loadingTextElement.innerHTML = `<p>${loadingMessages[currentMessageIndex]}</p>`;
             currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
-        }, 5000); 
+        }, 4000); 
     };
 
-    // Change the message every 2 seconds
     const textSwitchInterval = setInterval(switchText, 2000);
 
     fetch('/itinerary/generate', {
@@ -237,7 +219,6 @@ function submitForm() {
         console.error('Error generating itinerary:', error);
     })
     .finally(() => {
-        // Clear the text switch interval and hide the loading overlay once done
         clearInterval(textSwitchInterval);
         document.getElementById('loadingOverlay').style.display = 'none';
     });
