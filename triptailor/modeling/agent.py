@@ -77,7 +77,7 @@ class Agent:
             for activity in day['activities']:
                 enhanced_main_activity = []
                 for destination in activity['main_activity']:
-                    response = google_maps_tool.invoke({"destination": destination['name']})
+                    response = google_maps_tool.invoke({"destination": str(itinerary['destination_country']+','+destination['name'])})
                     
                     destination['geolocation'] = response.get('geolocation')
                     destination['image_url'] = response.get('image_url')
