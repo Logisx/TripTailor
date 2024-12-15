@@ -4,7 +4,7 @@ import requests
 from flask import request, jsonify, render_template, session, redirect
 
 from loguru import logger
-from modeling.inference import InferencePipeline
+from .modeling.inference import InferencePipeline
 
 
 def setup_routes(app):

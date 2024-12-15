@@ -6,9 +6,9 @@ from langgraph.graph import StateGraph, END
 
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage, ChatMessage, ToolMessage
 
-from modeling.prompts import PREFERENCES_EXTRACTION_PROMPT, IDEAS_GENERATION_PROMPT, ITINERARY_PLANNING_PROMPT
-from modeling.data_schemas import user_preferences_parser, travel_ideas_parser, itinerary_parser, AgentState
-from modeling.tools.google_maps_tool import GoogleMapsTool
+from ..modeling.prompts import PREFERENCES_EXTRACTION_PROMPT, IDEAS_GENERATION_PROMPT, ITINERARY_PLANNING_PROMPT
+from ..modeling.data_schemas import user_preferences_parser, travel_ideas_parser, itinerary_parser, AgentState
+from ..modeling.tools.google_maps_tool import GoogleMapsTool
 from loguru import logger
 
 class Agent:

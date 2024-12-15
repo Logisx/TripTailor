@@ -1,5 +1,5 @@
 from langchain_core.prompts import PromptTemplate
-from modeling.data_schemas import user_preferences_parser, travel_ideas_parser, itinerary_parser
+from ..modeling.data_schemas import user_preferences_parser, travel_ideas_parser, itinerary_parser
 
 
 PREFERENCES_EXTRACTION_PROMPT = PromptTemplate(

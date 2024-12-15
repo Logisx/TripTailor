@@ -1,5 +1,5 @@
 from loguru import logger
-from modeling.agent import Agent
+from ..modeling.agent import Agent
 from dotenv import load_dotenv
 
 import json
