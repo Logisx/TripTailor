@@ -1,5 +1,103 @@
-document.getElementById('startDate').addEventListener('change', validateDates);
-document.getElementById('endDate').addEventListener('change', validateDates);
+// Function to save form data and current step
+function saveForm() {
+    const formData = {
+        tripDescription: document.getElementById('tripDescription').value || '',
+        budget: document.getElementById('budget').value || '',
+        startDate: document.getElementById('startDate').value || '',
+        endDate: document.getElementById('endDate').value || '',
+        people: document.getElementById('people').value || '',
+        vibe: document.getElementById('vibe').value || '',
+        interests: document.getElementById('interests').value || '',
+        currentStep: currentStep // Save the current step
+    };
+
+    // Save the data to localStorage
+    localStorage.setItem('tripData', JSON.stringify(formData));
+}
+
+// Function to restore form data from localStorage
+function restoreForm() {
+    const savedData = JSON.parse(localStorage.getItem('tripData'));
+
+    if (savedData) {
+        document.getElementById('tripDescription').value = savedData.tripDescription || '';
+        document.getElementById('budget').value = savedData.budget || '';
+        document.getElementById('startDate').value = savedData.startDate || '';
+        document.getElementById('endDate').value = savedData.endDate || '';
+        document.getElementById('people').value = savedData.people || 2; // Default to 2 people if undefined
+        document.getElementById('vibe').value = savedData.vibe || '';
+        document.getElementById('interests').value = savedData.interests || '';
+        
+        // Manually restore the selected vibe and interests tiles
+        document.querySelectorAll('.vibe-tile').forEach(tile => {
+            if (tile.getAttribute('data-value') === savedData.vibe) {
+                tile.classList.add('selected');
+            } else {
+                tile.classList.remove('selected');
+            }
+        });
+
+        document.querySelectorAll('.interest-tile').forEach(tile => {
+            const interestValues = savedData.interests ? savedData.interests.split(',') : [];
+            if (interestValues.includes(tile.getAttribute('data-value'))) {
+                tile.classList.add('selected');
+            } else {
+                tile.classList.remove('selected');
+            }
+        });
+    }
+}
+
+// Function to add event listeners to all form fields
+function addEventListeners() {
+    // Add event listeners for each form field
+    document.getElementById('tripDescription').addEventListener('input', saveForm);
+    document.getElementById('budget').addEventListener('input', saveForm);
+    document.getElementById('people').addEventListener('input', saveForm);
+    document.getElementById('startDate').addEventListener('change', saveForm);
+    document.getElementById('endDate').addEventListener('change', saveForm);
+
+    // Add listeners for the vibe and interest tiles (click events)
+    document.querySelectorAll('.vibe-tile').forEach(tile => {
+        tile.addEventListener('click', saveForm);
+    });
+
+    document.querySelectorAll('.interest-tile').forEach(tile => {
+        tile.addEventListener('click', saveForm);
+    });
+}
+
+// Function to initialize the form (when the page is loaded)
+document.addEventListener('DOMContentLoaded', function () {
+    addEventListeners();
+
+    // Retrieve saved data from localStorage
+    const savedData = JSON.parse(localStorage.getItem('tripData'));
+    
+    if (savedData) {
+        // Restore form fields
+        document.getElementById('tripDescription').value = savedData.tripDescription;
+        document.getElementById('budget').value = savedData.budget;
+        document.getElementById('people').value = savedData.people;
+        document.getElementById('startDate').value = savedData.startDate;
+        document.getElementById('endDate').value = savedData.endDate;
+        document.getElementById('vibe').value = savedData.vibe;
+        document.getElementById('interests').value = savedData.interests;
+
+        // Restore the current step
+        currentStep = savedData.currentStep || 1; // Default to step 1 if not available
+
+        // Remove 'active' class from all steps
+        const allSteps = document.querySelectorAll('.step');
+        allSteps.forEach(step => step.classList.remove('active'));
+
+        // Add 'active' class to the current step
+        document.getElementById(`step${currentStep}`).classList.add('active');
+        updateProgressBar();
+    }
+});
+
+
 
 function validateDates() {
     const startDate = document.getElementById('startDate').value;
@@ -9,7 +107,7 @@ function validateDates() {
     if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
         alert("Start date cannot be later than the end date.");
         document.getElementById('endDate').setCustomValidity("End date must be later than start date.");
-        nextButton.disabled = true; // Disable the button if the dates are invalid
+        nextButton.disabled = false; // Disable the button if the dates are invalid
     } else {
         document.getElementById('endDate').setCustomValidity(""); // Reset custom validity
         nextButton.disabled = false; // Enable the button if the dates are valid
