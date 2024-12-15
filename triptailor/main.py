@@ -1,9 +1,8 @@
 # TODO
-# Itinerary is stored in a global dict
-# Improve google maps tool
-# Redis?
+
 # Fix buttons on index
 # Divide templates to css js html
+# Fix loading circle
 
 
 
@@ -99,7 +98,7 @@ def generate_itinerary_route():
         logger.info('>>>>> Inference started <<<<<')
         with open('triptailor/modeling/itinerary_example.json', 'r') as file:
             itinerary_json = json.load(file)
-        time.sleep(1) # To imitate delay
+        time.sleep(10) # To imitate delay
         logger.info('>>>>> Inference completed <<<<<')
     else:
         logger.info('>>>>> Inference started <<<<<')

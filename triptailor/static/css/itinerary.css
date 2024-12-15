@@ -1,0 +1,54 @@
+/* General Styles */
+body { margin: 0; font-family: Arial, sans-serif; }
+.itinerary-container { display: flex; height: calc(100vh - 70px); }
+
+/* Days Header */
+.day-tabs {
+    display: flex; overflow-x: auto; background: #f8f9fa; white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); padding: 10px 0;
+}
+.day-tab {
+    flex: 0 0 auto; margin: 0 10px; padding: 10px 15px; border-radius: 8px;
+    font-weight: bold; cursor: pointer; transition: transform 0.2s;
+    border: 2px solid #ddd; /* Border for inactive buttons */
+    color: #555;
+}
+.day-tab:hover { transform: scale(1.05); }
+.day-tab.active {
+    background-color: #007bff; color: #fff;
+    border-color: #007bff; /* Border for active button */
+}
+
+/* Tile Section */
+.tile-section {
+    flex: 60%; overflow-y: scroll; padding: 20px; background-color: #f8f9fa;
+}
+.map-section {
+    flex: 40%; position: relative; background-color: #ddd;
+}
+.map-container { position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+
+/* Destination Tile */
+.destination-card {
+    display: flex; margin-bottom: 20px; background: #fff; border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); overflow: hidden;
+}
+.destination-card img {
+    flex: 60%; object-fit: cover; max-height: 200px; width: 60%;
+}
+.destination-card .text-content {
+    flex: 40%; padding: 15px; display: flex; flex-direction: column;
+    justify-content: center; color: #333;
+}
+.destination-card h5 { margin: 0 0 5px; font-size: 1.25rem; font-weight: bolder;}
+
+/* Header */
+.header {
+    height: 70px; background-color: #343a40; color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.header button {
+    border: none; border-radius: 4px; padding: 8px 12px;
+    background-color: #007bff; color: #fff; cursor: pointer;
+}
