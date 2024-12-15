@@ -9,52 +9,97 @@
     <!-- Leaflet CSS for Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
-        /* Custom Styling */
+        /* General Styles */
         body { margin: 0; font-family: Arial, sans-serif; }
-        .itinerary-container { display: flex; height: 100vh; }
-        .tile-section {
-            flex: 1; overflow-y: scroll; padding: 20px; background-color: #f8f9fa;
+        .itinerary-container { display: flex; height: calc(100vh - 70px); }
+
+        /* Day Tabs */
+        .day-tabs {
+            display: flex; overflow-x: auto; background: #f8f9fa; white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); padding: 10px 0;
         }
-        .map-section {
-            flex: 1; position: relative; background-color: #ddd;
+        .day-tab {
+            flex: 0 0 auto; margin: 0 10px; padding: 10px 15px; border-radius: 8px;
+            font-weight: bold; cursor: pointer; transition: transform 0.2s;
         }
-        .map-container { position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
-        .itinerary-day { margin-bottom: 30px; }
-        .destination-card {
-            margin-bottom: 20px; padding: 15px;
-            background: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .destination-card img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; }
-        .day-tag {
-            font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;
-            display: inline-block; padding: 5px 10px; border-radius: 8px;
-        }
+        .day-tab:hover { transform: scale(1.05); }
         .day-1 { background-color: #ffcad4; color: #842029; }
         .day-2 { background-color: #ffe59d; color: #664d03; }
         .day-3 { background-color: #cce5ff; color: #004085; }
-        /* Map Marker Popups */
-        .leaflet-popup-content { font-size: 14px; }
+        .day-tab.active { border: 2px solid #333; }
+
+        /* Tile Section */
+        .tile-section {
+            flex: 60%; overflow-y: scroll; padding: 20px; background-color: #f8f9fa;
+        }
+        .map-section {
+            flex: 40%; position: relative; background-color: #ddd;
+        }
+        .map-container { position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+
+        /* Destination Card */
+        .destination-card {
+            display: flex; margin-bottom: 20px; background: #fff; border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); overflow: hidden;
+        }
+        .destination-card img {
+            flex: 60%; object-fit: cover; max-height: 200px; width: 60%;
+        }
+        .destination-card .text-content {
+            flex: 40%; padding: 15px; display: flex; flex-direction: column;
+            justify-content: center; color: #333;
+        }
+        .destination-card h5 { margin: 0 0 5px 0; font-size: 1.1rem; }
+        .destination-card p { margin: 0; font-size: 0.9rem; color: #555; }
+
+        /* Header */
+        .header {
+            height: 70px; background-color: #343a40; color: #fff;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .header button {
+            border: none; border-radius: 4px; padding: 8px 12px;
+            background-color: #007bff; color: #fff; font-size: 0.9rem; cursor: pointer;
+        }
+        .header button:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
 
+<!-- Header -->
+<div class="header">
+    <button onclick="window.location.href='/home';">Home</button>
+    <h3>{{ trip_name }}</h3>
+    <button onclick="downloadPDF()">Download PDF</button>
+</div>
+
+<!-- Day Tabs -->
+<div class="day-tabs">
+    {% for day in daily_itineraries %}
+        <div class="day-tab day-{{ loop.index }} {% if loop.first %}active{% endif %}" 
+             onclick="showDay({{ loop.index }})">
+            Day {{ loop.index }}
+        </div>
+    {% endfor %}
+</div>
+
+<!-- Main Content -->
 <div class="itinerary-container">
     <!-- Left: Scrollable Destination Tiles -->
     <div class="tile-section">
-        <h2 class="mb-4 text-center">{{ trip_name }}</h2>
         {% for day in daily_itineraries %}
-        <div class="itinerary-day">
-            <div class="day-tag day-{{ loop.index }}">
-                Day {{ loop.index }} - {{ day.date }}
-            </div>
+        <div class="itinerary-day" id="day-{{ loop.index }}" {% if not loop.first %}style="display: none;"{% endif %}>
             {% for activity_group in day.activities %}
                 {% for activity in activity_group.main_activity %}
                     <div class="destination-card">
-                        <h5>{{ activity.name }}</h5>
                         <img src="{{ activity.image_url }}" alt="{{ activity.name }}">
-                        <p><strong>Why Visit:</strong> {{ activity.description }}</p>
-                        <p><strong>Duration:</strong> {{ activity.duration }} hours</p>
-                        <p><strong>Cost:</strong> {{ activity.price }} EUR</p>
+                        <div class="text-content">
+                            <h5>{{ activity.name }}</h5>
+                            <p><strong>Why Visit:</strong> {{ activity.description }}</p>
+                            <p><strong>Duration:</strong> {{ activity.duration }} hours</p>
+                            <p><strong>Cost:</strong> €{{ activity.price }}</p>
+                        </div>
                     </div>
                 {% endfor %}
             {% endfor %}
@@ -70,7 +115,6 @@
 
 <!-- Bootstrap JS, Leaflet JS -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.5/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
@@ -97,6 +141,20 @@
                 {% endfor %}
             {% endfor %}
         {% endfor %}
+    }
+
+    // Day Tab Navigation
+    function showDay(dayIndex) {
+        document.querySelectorAll('.itinerary-day').forEach(day => day.style.display = 'none');
+        document.getElementById(`day-${dayIndex}`).style.display = 'block';
+
+        document.querySelectorAll('.day-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelector(`.day-tab:nth-child(${dayIndex})`).classList.add('active');
+    }
+
+    // PDF Download Placeholder
+    function downloadPDF() {
+        window.alert("PDF Download functionality will be implemented here.");
     }
 
     document.addEventListener('DOMContentLoaded', initializeMap);
