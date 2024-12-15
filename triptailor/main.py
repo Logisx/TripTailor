@@ -1,4 +1,8 @@
 import os
+import sys
+print("Current working directory:", os.getcwd())
+print("Python path:", sys.path)
+
 import configparser
 import redis
 import secrets
@@ -53,6 +57,7 @@ def init(app):
 init(app) 
 server_session = Session(app) # Create a session storage
 setup_routes(app) # Connect the routes to the app
+
 
 if __name__ == '__main__':
     app.run(
