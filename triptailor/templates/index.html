@@ -432,6 +432,7 @@
 
 
 
+
     let currentStep = 1;
     function nextStep(step) {
         document.getElementById(`step${currentStep}`).classList.remove('active');
@@ -448,12 +449,12 @@
 
     function submitForm() {
         const userData = {
-            tripDescription: document.getElementById('tripDescription').value,
-            budget: document.getElementById('budget').value,
-            dates: document.getElementById('dates').value,
-            people: document.getElementById('people').value,
-            vibe: document.getElementById('vibe').value,
-            interests: Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value)
+            tripDescription: document.getElementById('tripDescription')?.value || '',
+            budget: document.getElementById('budget')?.value || '',
+            dates: document.getElementById('dates')?.value || '',
+            people: document.getElementById('people')?.value || '',
+            vibe: document.getElementById('vibe')?.value || '',
+            interests: document.getElementById('interests')?.value || '' // Ensure it's populated
         };
 
         // Show the loading overlay
