@@ -476,8 +476,10 @@
         const loadingTextElement = document.getElementById('loadingText');
 
         const switchText = () => {
-            loadingTextElement.innerHTML = `<p>${loadingMessages[currentMessageIndex]}</p>`;
-            currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
+            setTimeout(() => {
+                loadingTextElement.innerHTML = `<p>${loadingMessages[currentMessageIndex]}</p>`;
+                currentMessageIndex = (currentMessageIndex + 1) % loadingMessages.length;
+            }, 5000); 
         };
 
         // Change the message every 2 seconds
