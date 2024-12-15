@@ -1,4 +1,5 @@
 import os
+
 import configparser
 import redis
 import secrets
@@ -36,7 +37,9 @@ def init(app):
             app.config['SESSION_TYPE'] = config.get("config", "session_type", fallback='redis')
             app.config['SESSION_PERMANENT'] = False
             app.config['SESSION_USE_SIGNER'] = True
-            app.config['SESSION_REDIS'] = redis.from_url(config.get("config", "redis_url", fallback="redis://127.0.0.1:6379"))
+            app.config['SESSION_REDIS'] = redis.from_url(
+                os.getenv('REDIS_URL', config.get("config", "redis_url", fallback="redis://127.0.0.1:6379"))
+            )
         except:
             logger.error("Redis configuration error")
         logger.info("App successfully initialized")
@@ -52,8 +55,9 @@ init(app)
 server_session = Session(app) # Create a session storage
 setup_routes(app) # Connect the routes to the app
 
+
 if __name__ == '__main__':
     app.run(
-        host=app.config['ip_address'],
-        port=int(app.config['port'])
+        host="0.0.0.0",  # Heroku requires 0.0.0.0
+        port=int(os.environ.get("PORT", 5000))  # Default to 5000 if PORT is not set
     )
