@@ -3,7 +3,6 @@ import configparser
 import redis
 import secrets
 from dotenv import load_dotenv
-afdsf
 from .routes import setup_routes 
 
 from flask import Flask
