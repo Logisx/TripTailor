@@ -7,6 +7,8 @@
 ### Prerequisites
 The app is using **Python 3.12.0** 
 
+Create `.env` file and add the relevant API keys and your Redis server url. Use `env_example.txt` as a template for your env file.
+
 ### Option 1: Using Poetry (Preferred)
 1. Install Poetry if not already installed:
    ```bash
