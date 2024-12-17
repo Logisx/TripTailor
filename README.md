@@ -1,10 +1,6 @@
+# UNDER CONSTRUCTION
+
 # TripTailor
-
-<a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
-    <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
-</a>
-
-A short description of the project.
 
 ## Project Organization
 
@@ -22,9 +18,7 @@ A short description of the project.
 │
 ├── models             <- Trained and serialized models, model predictions, or model summaries
 │
-├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                         the creator's initials, and a short `-` delimited description, e.g.
-│                         `1.0-jqp-initial-data-exploration`.
+├── notebooks          <- Jupyter notebooks for initial experiments
 │
 ├── pyproject.toml     <- Project configuration file with package metadata for 
 │                         triptailor and configuration for tools like black
@@ -39,22 +33,31 @@ A short description of the project.
 │
 ├── setup.cfg          <- Configuration file for flake8
 │
+├── Procfile           <- File defining how to start the app for Heroku
+│
 └── triptailor   <- Source code for use in this project.
     │
     ├── __init__.py             <- Makes triptailor a Python module
     │
-    ├── config.py               <- Store useful variables and configuration
+    ├── etc/defaults.cfg        <- Store useful variables and configuration
     │
-    ├── dataset.py              <- Scripts to download or generate data
+    ├── logger.py               <- Initialized logger
     │
-    ├── features.py             <- Code to create features for modeling
-    │
+    ├── main.py                 <- Starts up the application
+    |
+    ├── routes.py               <- Defines API routes
+    |
+    ├── templates/              <- HTML templates for Flask to render  
+    |
     ├── modeling                
     │   ├── __init__.py 
-    │   ├── predict.py          <- Code to run model inference with trained models          
-    │   └── train.py            <- Code to train models
+    │   ├── agent.py            <- Class defining the pipeline of LLM calls         
+    │   ├── data_schemas.py     <- Contains desired output format for the LLM calls          
+    │   ├── inference.py        <- Class running a pipeline to generate itinerary          
+    │   ├── prompts.py          <- Contains prompt templates used to form an LLM request          
+    │   └── itinerary_example.json <- Sample itinerary used when debugging
     │
-    └── plots.py                <- Code to create visualizations
+    └── static/                 <- CSS and JS files for the frontend
 ```
 
 --------
