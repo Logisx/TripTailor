@@ -2,6 +2,43 @@
 
 # TripTailor
 
+## How to Start the Application
+
+### Prerequisites
+The app is using **Python 3.12.0** 
+
+### Option 1: Using Poetry (Preferred)
+1. Install Poetry if not already installed:
+   ```bash
+   pip install poetry
+   ```
+
+2. Install dependencies:
+   ```bash
+   poetry install
+   ```
+
+3. Start the application:
+   ```bash
+   poetry run python -m triptailor.main
+   ```
+
+---
+
+### Option 2: Using `requirements.txt`
+If Poetry is not available, use `pip` to install dependencies.
+
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Start the application:
+   ```bash
+   python -m triptailor.main
+   ```
+
+
 ## Project Organization
 
 ```
