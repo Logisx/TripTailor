@@ -1,1 +1,1 @@
-web: python -m triptailor.main
+web: gunicorn -t 120 triptailor.main:app
