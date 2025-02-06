@@ -1,47 +1,52 @@
-# UNDER CONSTRUCTION
+# 🏝️ TripTailor
 
-# TripTailor
+TripTailor is an **AI-powered travel planning assistant** that creates **personalized itineraries** based on user preferences. Enter your prompt for a desired adventure and receive tailored plan that recommends destinations to visit. Distances, opening hours, lunch-breaks - everything already considered for you, so you can focus on enjoyment!
 
-## How to Start the Application
-
-### Prerequisites
-The app is using **Python 3.12.0** 
-
-Create `.env` file and add the relevant API keys and your Redis server url. Use `env_example.txt` as a template for your env file.
-
-### Option 1: Using Poetry (Preferred)
-1. Install Poetry if not already installed:
-   ```bash
-   pip install poetry
-   ```
-
-2. Install dependencies:
-   ```bash
-   poetry install
-   ```
-
-3. Start the application:
-   ```bash
-   poetry run python -m triptailor.main
-   ```
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+![LangChain](https://img.shields.io/badge/LangChain-LLM-ffcc00)
+![Redis](https://img.shields.io/badge/Redis-Caching-red)
+![Flask](https://img.shields.io/badge/Flask-Web%20App-blue)
+![Docker](https://img.shields.io/badge/Docker-Deployment-0089D6)
 
 ---
 
-### Option 2: Using `requirements.txt`
-If Poetry is not available, use `pip` to install dependencies.
+## 📋 Table of Contents
 
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+- [🏝️ TripTailor](#️-triptailor)
+  - [📋 Table of Contents](#-table-of-contents)
+  - [⭐ Features](#-features)
+  - [🛠️ Tech Stack](#️-tech-stack)
+  - [📁 Project Structure](#-project-structure)
+  - [🚀 Run Locally](#-run-locally)
+    - [Prerequisites](#prerequisites)
+    - [Option 1: Using Poetry (Preferred)](#option-1-using-poetry-preferred)
+    - [Option 2: Using `requirements.txt`](#option-2-using-requirementstxt)
+  - [🛤️ Roadmap](#️-roadmap)
+  - [⚖️ License](#️-license)
+  - [🔗 Links](#-links)
 
-2. Start the application:
-   ```bash
-   python -m triptailor.main
-   ```
+---
 
+## ⭐ Features
 
-## Project Organization
+- **Personalized Travel Itineraries**: Generates customized plans based on budget, travel dates, and preferences.
+- **Multi-Agent AI System**: Uses LangChain agents to gather data from various sources.
+- **Real-Time Data Integration**: Fetches live information from APIs like Google Places.
+- **User-Friendly Web Interface**: Simple and interactive UI for input and plan visualization.
+- **Optimized Scheduling**: Ensures efficient use of time with AI-generated schedules.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Backend**: FastAPI, LangChain, Redis, Flask
+- **Frontend**: HTML, CSS, JavaScript (for simple rendering)
+- **Data Processing**: Python, Pandas
+- **Deployment**: Docker, Heroku
+
+---
+
+## 📁 Project Structure
 
 ```
 ├── LICENSE            <- Open-source license if one is chosen
@@ -98,6 +103,63 @@ If Poetry is not available, use `pip` to install dependencies.
     │
     └── static/                 <- CSS and JS files for the frontend
 ```
+
+
+
+## 🚀 Run Locally
+
+### Prerequisites
+- **Python 3.12.0**
+- **Redis Server** (for caching)
+
+Create `.env` file and add the relevant API keys and your Redis server url. Use `env_example.txt` as a template for your env file.
+
+### Option 1: Using Poetry (Preferred)
+1. Install Poetry if not already installed:
+   ```bash
+   pip install poetry
+   ```
+
+2. Install dependencies:
+   ```bash
+   poetry install
+   ```
+
+3. Start the application:
+   ```bash
+   poetry run python -m triptailor.main
+   ```
+
+---
+
+### Option 2: Using `requirements.txt`
+If Poetry is not available, use `pip` to install dependencies.
+
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Start the application:
+   ```bash
+   python -m triptailor.main
+   ```
+
+
+## 🛤️ Roadmap  
+- Implement interactive itinerary customization  
+- Improve AI-generated trip suggestions  
+- Integrate additional travel APIs  
+- Develop a web-based UI for easier trip planning  
+
+## ⚖️ License  
+This project is licensed under the **MIT License**.  
+
+## 🔗 Links  
+- **Repository**: [GitHub](#)  
+- **Documentation**: [TripTailor Docs](#)  
+- **Contributors**: [Your Name](#)  
+
 
 --------
 
