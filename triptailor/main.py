@@ -38,7 +38,7 @@ def init(app):
             app.config['SESSION_PERMANENT'] = False
             app.config['SESSION_USE_SIGNER'] = True
             app.config['SESSION_REDIS'] = redis.from_url(
-                os.getenv('REDIS_URL', config.get("config", "redis_url", fallback="redis://default:oRT8rb2kdojrS7ot8VnqVHRPqbNMlrdk@redis-13198.c16.us-east-1-3.ec2.redns.redis-cloud.com:13198"))
+                os.getenv('REDIS_URL', config.get("config", "redis_url", fallback="redis://localhost:6379/0"))
             )
         except:
             logger.error("Redis configuration error")
