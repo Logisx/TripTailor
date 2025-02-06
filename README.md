@@ -187,7 +187,7 @@ This project is licensed under the **MIT License**.
 
 ## 🔗 Links  
 - **Repository**: [GitHub](https://github.com/Logisx/TripTailor)
-- **Connect**: [My LinkedIn](www.linkedin.com/in/aleksandrshishkov)  
+- **Connect**: [My LinkedIn](https://www.linkedin.com/in/aleksandrshishkov/)  
 
 
 --------
